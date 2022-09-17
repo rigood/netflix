@@ -49,9 +49,11 @@ const Ranking = styled.div`
 `;
 
 const Overview = styled.div`
-  font-size: 1.2vw;
-  font-weight: 400;
-  word-break: keep-all;
+  p {
+    font-size: 1.2vw;
+    font-weight: 400;
+    word-break: keep-all;
+  }
 `;
 
 function Banner({ movie }: IBannerProps) {
@@ -66,7 +68,9 @@ function Banner({ movie }: IBannerProps) {
           <h2>오늘 영화 순위 7위</h2>
         </Ranking>
         <Overview>
-          {movie?.overview.length! > 80 ? `${movie?.overview.slice(0, 80)}...` : movie?.overview}
+          <p>
+            {movie?.overview.length! > 80 ? `${movie?.overview.slice(0, 80)}...` : movie?.overview}
+          </p>
         </Overview>
       </HeroWrapper>
     </Hero>

@@ -8,7 +8,6 @@ import { useQuery } from "@tanstack/react-query";
 import {
   IGetMoviesResult,
   getNowPlayingMovies,
-  getLatestMovies,
   getTopRatedMovies,
   getUpcomingMovies,
   getMovieDetail,
@@ -16,6 +15,7 @@ import {
 
 /* Components */
 import Banner from "../Components/Banner";
+import Slider from "../Components/Slider";
 
 /* Components Styling */
 const Wrapper = styled.div``;
@@ -28,23 +28,26 @@ const Loader = styled.div`
   font-size: 5vw;
 `;
 
+const SlideWrapper = styled.div`
+  position: relative;
+  top: -15vw;
+`;
+
 function Home() {
   const useMultipleQuery = () => {
     const nowPlaying = useQuery<IGetMoviesResult>(["nowPlaying"], getNowPlayingMovies);
-    const latest = useQuery<IGetMoviesResult>(["latest"], getLatestMovies);
     const topRated = useQuery<IGetMoviesResult>(["topRated"], getTopRatedMovies);
     const upcoming = useQuery<IGetMoviesResult>(["upcoming"], getUpcomingMovies);
-    return [nowPlaying, latest, topRated, upcoming];
+    return [nowPlaying, topRated, upcoming];
   };
 
   const [
     { isLoading: loadingNowPlaying, data: nowPlayingData },
-    { isLoading: loadingLatest, data: latestData },
     { isLoading: loadingTopRated, data: topRatedData },
     { isLoading: loadingUpcoming, data: upcomingData },
   ] = useMultipleQuery();
 
-  const isLoading = loadingNowPlaying || loadingLatest || loadingTopRated || loadingUpcoming;
+  const isLoading = loadingNowPlaying || loadingTopRated || loadingUpcoming;
 
   return (
     <Wrapper>
@@ -55,6 +58,11 @@ function Home() {
       ) : (
         <>
           <Banner movie={nowPlayingData?.results[7]} />
+          <SlideWrapper>
+            <Slider movies={nowPlayingData?.results} title="지금 뜨는 콘텐츠" />
+            <Slider movies={topRatedData?.results} title="오늘 한국 TOP 10 영화" />
+            <Slider movies={upcomingData?.results} title="개봉 예정 영화" />
+          </SlideWrapper>
         </>
       )}
     </Wrapper>
