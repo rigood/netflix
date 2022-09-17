@@ -1,14 +1,9 @@
 import styled from "styled-components";
 
 /* Routing */
-// (v5) useRouteMatch -> (v6) useMatch, PathMatch
-// (v5) useHistory -> (v6) useNavigate
 import { Link, useMatch, PathMatch, useNavigate } from "react-router-dom";
 
 /* Motion */
-// Nav : useAnimation(cotroll animation by code), useScroll
-// Circle : AnimatePresence
-// Logo(using path), Input, Icon
 import { motion, useAnimation, useScroll, AnimatePresence } from "framer-motion";
 
 /* Detect scrollY change*/
@@ -20,10 +15,7 @@ import { useForm } from "react-hook-form";
 /* Toggle search-input */
 import { useState } from "react";
 
-/* Logo svg */
-// import { ReactComponent as LogoSvg } from "../img/logo.svg";
-
-/* Component Styling */
+/* Components Styling */
 const Nav = styled(motion.nav)`
   display: flex;
   justify-content: space-between;
@@ -32,7 +24,7 @@ const Nav = styled(motion.nav)`
   top: 0;
   width: 100%;
   height: 80px;
-  padding: 0 40px;
+  padding: 0 60px;
   z-index: 9;
 `;
 
@@ -52,7 +44,7 @@ const Col = styled.div`
 
 const Logo = styled.svg`
   position: relative;
-  bottom: -5px;
+  bottom: -8px;
   width: 100px;
   height: 50px;
   margin-right: 30px;
@@ -84,8 +76,7 @@ const Menus = styled.ul`
 
 const Menu = styled.li`
   position: relative;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 13px;
   color: ${(props) => props.theme.white.darker};
   &:hover {
     color: ${(props) => props.theme.white.lighter};
@@ -116,7 +107,7 @@ const Input = styled(motion.input)`
   position: absolute;
   right: 0;
   z-index: 1;
-  margin-right: 40px;
+  margin-right: 60px;
   padding: 5px;
   padding-left: 30px;
   border: 1px solid ${(porps) => porps.theme.white.darker};
