@@ -6,7 +6,13 @@ import { makeImgPath } from "../utils";
 import { useState } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft, faAngleRight, faStar } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleLeft,
+  faAngleRight,
+  faCirclePlay,
+  faCirclePlus,
+  faHeart,
+} from "@fortawesome/free-solid-svg-icons";
 import useWindowDimensions from "./useWindowDimensions";
 
 interface ISliderProps {
@@ -103,11 +109,22 @@ const Info = styled(motion.div)`
   word-break: keep-all;
   opacity: 0;
   z-index: 9999;
+  .icons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5vw;
+    font-size: 1.2vw;
+    .play,
+    .plus {
+      margin-right: 0.3vw;
+    }
+  }
   h4 {
     margin-bottom: 0.3vw;
     font-size: 0.8vw;
   }
-  div {
+  .subInfo {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -199,9 +216,18 @@ function Slider({ movies, title }: ISliderProps) {
                   initial="normal"
                 >
                   <Info variants={infoVariants}>
+                    <div className="icons">
+                      <div>
+                        <FontAwesomeIcon icon={faCirclePlay} className="play" />
+                        <FontAwesomeIcon icon={faCirclePlus} className="plus" />
+                      </div>
+                      <div>
+                        <FontAwesomeIcon icon={faHeart} className="heart" />
+                      </div>
+                    </div>
                     <h4>{movie.title}</h4>
-                    <div>
-                      <span> 개봉 : {movie.release_date}</span>
+                    <div className="subInfo">
+                      <span>개봉 : {movie.release_date}</span>
                       <span>평점 : ⭐{movie.vote_average} 점</span>
                     </div>
                   </Info>
