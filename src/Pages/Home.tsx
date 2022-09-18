@@ -10,7 +10,6 @@ import {
   getNowPlayingMovies,
   getTopRatedMovies,
   getUpcomingMovies,
-  getMovieDetail,
 } from "../api";
 
 /* Components */
@@ -45,6 +44,7 @@ function Home() {
     const nowPlaying = useQuery<IGetMoviesResult>(["nowPlaying"], getNowPlayingMovies);
     const topRated = useQuery<IGetMoviesResult>(["topRated"], getTopRatedMovies);
     const upcoming = useQuery<IGetMoviesResult>(["upcoming"], getUpcomingMovies);
+
     return [nowPlaying, topRated, upcoming];
   };
 

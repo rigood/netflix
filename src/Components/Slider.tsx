@@ -11,9 +11,13 @@ import {
   faAngleRight,
   faCirclePlay,
   faCirclePlus,
+  faCircleXmark,
+  faClose,
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
 import useWindowDimensions from "./useWindowDimensions";
+
+import { useMatch, useNavigate } from "react-router-dom";
 
 interface ISliderProps {
   movies?: IMovie[];
@@ -119,6 +123,9 @@ const Info = styled(motion.div)`
     .plus {
       margin-right: 0.3vw;
     }
+    .heart {
+      color: ${(props) => props.theme.red};
+    }
   }
   h4 {
     margin-bottom: 0.3vw;
@@ -128,6 +135,7 @@ const Info = styled(motion.div)`
     display: flex;
     flex-wrap: wrap;
     align-items: center;
+    font-weight: 500;
     span {
       margin-bottom: 0.2vw;
       font-size: 0.6vw;
@@ -149,6 +157,108 @@ const infoVariants = {
     },
   },
 };
+
+const Overlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+`;
+
+const BigMovie = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 40%;
+  min-width: 480px;
+  height: fit-content;
+  border-radius: 15px;
+  background-color: ${(props) => props.theme.black.veryDark};
+  z-index: 9999;
+  overflow: hidden;
+`;
+
+const BigCover = styled.div<{ bg: string }>`
+  position: relative;
+  width: 100%;
+  padding-top: 60%;
+  background-image: linear-gradient(transparent, black), url(${(props) => props.bg});
+  background-size: cover;
+  background-position: center top;
+  .closeBtn {
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    font-size: 24px;
+    cursor: pointer;
+  }
+`;
+
+const BigPoster = styled.div<{ bg: string }>`
+  position: absolute;
+  bottom: 30px;
+  right: 5%;
+  width: 120px;
+  height: 180px;
+  border-radius: 5px;
+  background-image: url(${(props) => props.bg});
+  background-size: cover;
+  box-shadow: 6px 5px 29px 10px #000000;
+`;
+
+const BigCoverInfo = styled.div`
+  position: absolute;
+  bottom: 0%;
+  left: 5%;
+`;
+
+const BigTitle = styled.h1`
+  margin-bottom: 8px;
+  font-size: 28px; ;
+`;
+
+const BigSubInfo = styled.div`
+  margin-bottom: 20px;
+  span:first-child {
+    margin-right: 15px;
+    color: ${(props) => props.theme.green};
+  }
+`;
+
+const BigContent = styled.div`
+  display: grid;
+  grid-template-columns: auto 120px;
+  padding: 0 5% 5% 5%;
+`;
+
+const BigOverview = styled.p`
+  width: 90%;
+  word-break: keep-all;
+  font-size: 14px;
+  font-weight: 300;
+`;
+
+const BigIcons = styled.div`
+  display: flex;
+  justify-content: space-around;
+  font-size: 40px;
+  cursor: pointer;
+  .play,
+  .plus {
+    color: ${(props) => props.theme.black.lighter};
+    transition: all 0.3s ease-in-out;
+  }
+  .play:hover,
+  .plus:hover {
+    scale: 1.2;
+    color: ${(props) => props.theme.white.lighter};
+  }
+`;
 
 const offset = 6;
 
@@ -184,6 +294,19 @@ function Slider({ movies, title }: ISliderProps) {
     setMovingPrev(false);
   };
 
+  const bigMovieMatch = useMatch("/movies/:movieId");
+  console.log(bigMovieMatch);
+  const navigate = useNavigate();
+  const onBoxClicked = (movieId: number) => {
+    navigate(`/movies/${movieId}`);
+  };
+  const onOverlayClicked = () => navigate(-1);
+  const onCloseBtnClicked = () => navigate(-1);
+  const { scrollY } = useScroll();
+  const clickedMovie =
+    bigMovieMatch?.params.movieId &&
+    movies?.find((movie) => String(movie.id) === bigMovieMatch.params.movieId);
+
   return (
     <>
       <Title>
@@ -214,6 +337,7 @@ function Slider({ movies, title }: ISliderProps) {
                   variants={boxVariants}
                   whileHover="hover"
                   initial="normal"
+                  onClick={() => onBoxClicked(movie.id)}
                 >
                   <Info variants={infoVariants}>
                     <div className="icons">
@@ -222,7 +346,7 @@ function Slider({ movies, title }: ISliderProps) {
                         <FontAwesomeIcon icon={faCirclePlus} className="plus" />
                       </div>
                       <div>
-                        <FontAwesomeIcon icon={faHeart} className="heart" />
+                        <FontAwesomeIcon icon={faHeart} className="heart" beat />
                       </div>
                     </div>
                     <h4>{movie.title}</h4>
@@ -239,6 +363,41 @@ function Slider({ movies, title }: ISliderProps) {
           <FontAwesomeIcon icon={faAngleRight} />
         </RightArrow>
       </Wrapper>
+      <AnimatePresence>
+        {bigMovieMatch ? (
+          <>
+            <Overlay onClick={onOverlayClicked} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
+            <BigMovie>
+              {clickedMovie && (
+                <>
+                  <BigCover bg={makeImgPath(clickedMovie.poster_path, "w500")}>
+                    <BigPoster bg={makeImgPath(clickedMovie.poster_path, "w500")} />
+                    <BigCoverInfo>
+                      <BigTitle>{clickedMovie.title}</BigTitle>
+                      <BigSubInfo>
+                        <span>개봉 : {clickedMovie.release_date}</span>
+                        <span>평점 : ⭐{clickedMovie.vote_average} 점</span>
+                      </BigSubInfo>
+                    </BigCoverInfo>
+                    <FontAwesomeIcon
+                      className="closeBtn"
+                      icon={faClose}
+                      onClick={onCloseBtnClicked}
+                    />
+                  </BigCover>
+                  <BigContent>
+                    <BigOverview>{clickedMovie.overview}</BigOverview>
+                    <BigIcons>
+                      <FontAwesomeIcon icon={faCirclePlay} className="play" bounce />
+                      <FontAwesomeIcon icon={faCirclePlus} className="plus" />
+                    </BigIcons>
+                  </BigContent>
+                </>
+              )}
+            </BigMovie>
+          </>
+        ) : null}
+      </AnimatePresence>
     </>
   );
 }
