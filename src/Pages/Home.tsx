@@ -17,15 +17,22 @@ import {
 import Banner from "../Components/Banner";
 import Slider from "../Components/Slider";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+
 /* Components Styling */
 const Wrapper = styled.div``;
 
 const Loader = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  font-size: 5vw;
+  font-size: 3vw;
+  h1 {
+    margin-top: 2vw;
+  }
 `;
 
 const SlideWrapper = styled.div`
@@ -53,6 +60,7 @@ function Home() {
     <Wrapper>
       {isLoading ? (
         <Loader>
+          <FontAwesomeIcon icon={faSpinner} spinPulse color="red" />
           <h1>잠시만 기다려주세요</h1>
         </Loader>
       ) : (
