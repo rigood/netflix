@@ -4,18 +4,16 @@ const BASE_PATH = "https://api.themoviedb.org/3";
 export interface IMovie {
   id: number;
   title: string;
+  name: string;
   overview: string;
   release_date: string;
+  first_air_date: string;
   vote_average: number;
   backdrop_path: string;
   poster_path: string;
 }
 
 export interface IGetMoviesResult {
-  dates: {
-    maximum: string;
-    minimum: string;
-  };
   page: number;
   results: IMovie[];
   total_pages: number;

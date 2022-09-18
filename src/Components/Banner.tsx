@@ -6,6 +6,7 @@ import { makeImgPath } from "../utils";
 
 interface IBannerProps {
   movie?: IMovie;
+  category: string;
 }
 
 const Hero = styled.div<{ bgPhoto: string }>`
@@ -29,7 +30,7 @@ const Title = styled.div`
   align-items: center;
   margin-bottom: 1vw;
   h1 {
-    font-size: 3vw;
+    font-size: 2.5vw;
     text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.7);
   }
 `;
@@ -56,16 +57,16 @@ const Overview = styled.div`
   }
 `;
 
-function Banner({ movie }: IBannerProps) {
+function Banner({ movie, category }: IBannerProps) {
   return (
     <Hero bgPhoto={makeImgPath(movie?.backdrop_path || "")}>
       <HeroWrapper>
         <Title>
-          <h1>{movie?.title}</h1>
+          <h1>{category === "영화" ? movie?.title : movie?.name}</h1>
         </Title>
         <Ranking>
           <img src={process.env.PUBLIC_URL + "/assets/logo_sm.png"} alt="logo" />
-          <h2>오늘 영화 순위 7위</h2>
+          <h2>오늘의 {category} 순위 1위</h2>
         </Ranking>
         <Overview>
           <p>

@@ -74,6 +74,7 @@ const logoVariants = {
     },
   },
 };
+
 const Menus = styled.ul`
   display: flex;
   align-items: center;

@@ -28,9 +28,10 @@ const Loader = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  font-size: 3vw;
+  font-size: 5vw;
   h1 {
     margin-top: 2vw;
+    font-size: 2vw;
   }
 `;
 
@@ -65,11 +66,11 @@ function Home() {
         </Loader>
       ) : (
         <>
-          <Banner movie={nowPlayingData?.results[7]} />
+          <Banner movie={nowPlayingData?.results[0]} category="영화" />
           <SlideWrapper>
-            <Slider movies={nowPlayingData?.results} title="지금 뜨는 콘텐츠" />
-            <Slider movies={topRatedData?.results} title="오늘 한국 TOP 10 영화" />
-            <Slider movies={upcomingData?.results} title="개봉 예정 영화" />
+            <Slider movies={nowPlayingData?.results} title="지금 뜨는 콘텐츠" category="영화" />
+            <Slider movies={topRatedData?.results} title="오늘 한국 TOP 10 영화" category="영화" />
+            <Slider movies={upcomingData?.results} title="개봉 예정 영화" category="영화" />
           </SlideWrapper>
         </>
       )}
