@@ -6,7 +6,8 @@ import { makeImgPath } from "../utils";
 import { useState } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft, faAngleRight, faBackspace } from "@fortawesome/free-solid-svg-icons";
+import useWindowDimensions from "./useWindowDimensions";
 
 interface ISliderProps {
   movies?: IMovie[];
@@ -38,11 +39,11 @@ const Row = styled(motion.div)`
 
 const Box = styled(motion.div)<{ bg: string }>`
   overflow: hidden;
-  width: 100%;
-  padding-top: 50%;
+  padding-top: 56.25%;
   border-radius: 0.2vw;
   background-image: url(${(props) => props.bg});
   background-size: contain;
+  background-repeat: no-repeat;
   cursor: pointer;
 `;
 
@@ -73,38 +74,40 @@ const RightArrow = styled(Arrow)`
   right: 0;
 `;
 
-const rowVariants = {
-  hidden: (backwards: boolean) => ({
-    x: backwards ? -window.outerWidth + 10 : window.outerWidth - 10,
-  }),
-  visible: {
-    x: 0,
-  },
-  exit: (backwards: boolean) => ({
-    x: backwards ? window.outerWidth - 10 : -window.outerWidth + 10,
-  }),
-};
-
 const offset = 6;
 
 function Slider({ movies, title }: ISliderProps) {
+  const width = useWindowDimensions();
+
+  const [back, setBack] = useState(false);
+  const [movingNext, setMovingNext] = useState(false);
+  const [movingPrev, setMovingPrev] = useState(false);
+
   const [index, setIndex] = useState(0);
   const totalMovies = movies?.length! - 1;
   const maxIndex = Math.floor(totalMovies / offset) - 1;
-  const [backwards, setBackwards] = useState(false);
+
   const increaseIndex = () => {
     if (movies) {
+      if (movingNext) return;
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
-      setBackwards(false);
+      setBack(false);
+      setMovingNext(true);
     }
   };
   const decreaseIndex = () => {
     if (movies) {
-      setIndex((prev) => (prev === maxIndex ? prev - 1 : 0));
-      setBackwards(true);
+      if (movingPrev) return;
+      setIndex((prev) => prev - 1);
+      setBack(true);
+      setMovingPrev(true);
     }
   };
-  console.log(index);
+  const toggleMoving = () => {
+    setMovingNext(false);
+    setMovingPrev(false);
+  };
+
   return (
     <>
       <Title>
@@ -116,21 +119,23 @@ function Slider({ movies, title }: ISliderProps) {
             <FontAwesomeIcon icon={faAngleLeft} />
           </LeftArrow>
         )}
-        <AnimatePresence initial={false}>
+        <AnimatePresence initial={false} onExitComplete={toggleMoving} custom={width}>
           <Row
             key={index}
-            custom={backwards}
-            variants={rowVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            transition={{ type: "tween", duration: 1 }}
+            initial={{ x: back ? "-100vw" : width - 130 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: back ? "100vw" : -width + 60 }}
+            transition={{ type: "tween", duration: 0.7 }}
           >
             {movies
               ?.slice(1)
               .slice(offset * index, offset * index + offset)
               .map((movie) => (
-                <Box key={movie.id} bg={makeImgPath(movie.backdrop_path, "w500")}></Box>
+                <Box
+                  key={movie.id}
+                  bg={makeImgPath(movie.backdrop_path, "w500")}
+                  custom={width}
+                ></Box>
               ))}
           </Row>
         </AnimatePresence>
