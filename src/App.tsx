@@ -13,11 +13,10 @@ function App() {
   /* v5 start with 방식으로 경로 매치, 배치순서 중요 */
   /* v6 full match 방식으로 경로 매치, 배치순서 무관 */
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/netflix" element={<Home />} />
         <Route path="/movies/:id" element={<Home />} />
         <Route path="/tv" element={<Tv />} />
         <Route path="/tv/:id" element={<Tv />} />
