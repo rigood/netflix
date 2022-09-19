@@ -1,6 +1,7 @@
+/* Routing */
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-/* Component */
+/* Components */
 import Header from "./Components/Header";
 
 /* Pages */

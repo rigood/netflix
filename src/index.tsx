@@ -15,7 +15,7 @@ import { theme } from "./theme";
 import { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
 
-/* App component */
+/* Components */
 import App from "./App";
 
 const GlobalStyle = createGlobalStyle`

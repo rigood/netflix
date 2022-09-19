@@ -15,7 +15,7 @@ import {
   faClose,
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
-import useWindowDimensions from "./useWindowDimensions";
+import useWindowDimensions from "../useWindowDimensions";
 
 import { useMatch, useNavigate } from "react-router-dom";
 

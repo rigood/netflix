@@ -1,8 +1,5 @@
 import styled from "styled-components";
 
-/* Routing */
-import { useMatch, PathMatch, useNavigate } from "react-router-dom";
-
 /* Data fetching */
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -16,12 +13,11 @@ import {
 import Banner from "../Components/Banner";
 import Slider from "../Components/Slider";
 
+/* Icons */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
 /* Components Styling */
-const Wrapper = styled.div``;
-
 const Loader = styled.div`
   display: flex;
   flex-direction: column;
@@ -35,17 +31,18 @@ const Loader = styled.div`
   }
 `;
 
-const SlideWrapper = styled.div`
+const SliderWrapper = styled.div`
+  // Lift up to display Slider
   position: relative;
   top: -15vw;
 `;
 
 function Home() {
+  // Data-fectching
   const useMultipleQuery = () => {
     const nowPlaying = useQuery<IGetMoviesResult>(["nowPlaying"], getNowPlayingMovies);
     const topRated = useQuery<IGetMoviesResult>(["topRated"], getTopRatedMovies);
     const upcoming = useQuery<IGetMoviesResult>(["upcoming"], getUpcomingMovies);
-
     return [nowPlaying, topRated, upcoming];
   };
 
@@ -58,23 +55,27 @@ function Home() {
   const isLoading = loadingNowPlaying || loadingTopRated || loadingUpcoming;
 
   return (
-    <Wrapper>
+    <>
       {isLoading ? (
         <Loader>
-          <FontAwesomeIcon icon={faSpinner} spinPulse color="red" />
+          <FontAwesomeIcon icon={faSpinner} color="red" spinPulse />
           <h1>잠시만 기다려주세요</h1>
         </Loader>
       ) : (
         <>
           <Banner movie={nowPlayingData?.results[0]} category="영화" />
-          <SlideWrapper>
-            <Slider movies={nowPlayingData?.results} title="지금 뜨는 콘텐츠" category="영화" />
-            <Slider movies={topRatedData?.results} title="오늘 한국 TOP 10 영화" category="영화" />
+          <SliderWrapper>
+            <Slider movies={nowPlayingData?.results} title="현재 상영 중인 영화" category="영화" />
+            <Slider
+              movies={topRatedData?.results}
+              title="오늘의 한국 TOP 10 영화"
+              category="영화"
+            />
             <Slider movies={upcomingData?.results} title="개봉 예정 영화" category="영화" />
-          </SlideWrapper>
+          </SliderWrapper>
         </>
       )}
-    </Wrapper>
+    </>
   );
 }
 

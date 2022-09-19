@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Link, useMatch, PathMatch, useNavigate } from "react-router-dom";
 
 /* Motion */
-import { motion, useAnimation, useScroll, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useAnimation, AnimatePresence } from "framer-motion";
 
 /* Detect scrollY change*/
 import { useEffect } from "react";
@@ -17,6 +17,7 @@ import { useState } from "react";
 
 /* Components Styling */
 const Nav = styled(motion.nav)`
+  z-index: 9;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -25,7 +26,6 @@ const Nav = styled(motion.nav)`
   width: 100%;
   height: 80px;
   padding: 0 60px;
-  z-index: 9;
 `;
 
 const navVariants = {
@@ -43,7 +43,7 @@ const Col = styled.div`
 `;
 
 const Logo = styled.svg`
-  position: relative;
+  position: relative; // To align baseline with Circle
   bottom: -8px;
   width: 100px;
   height: 50px;
@@ -63,13 +63,16 @@ const logoVariants = {
     pathLength: 1,
     fill: "rgba(229, 16, 19, 1)",
     transition: {
+      // Copied the 'ease' value of Framer-Motion's Path example
       default: { duration: 5, ease: "easeInOut" },
       fill: { duration: 3, ease: [1, 0, 0.8, 1] },
     },
   },
   hover: {
+    // Shrink logo due to fixed logo size
     scale: 0.9,
     transition: {
+      // 'yoyo' is a type of repeatType
       yoyo: Infinity,
     },
   },
@@ -81,9 +84,8 @@ const Menus = styled.ul`
 `;
 
 const Menu = styled.li`
-  position: relative;
+  position: relative; // To position Circle
   font-size: 13px;
-  color: ${(props) => props.theme.white.darker};
   &:hover {
     color: ${(props) => props.theme.white.lighter};
   }
@@ -95,6 +97,8 @@ const Menu = styled.li`
 const Circle = styled(motion.span)`
   position: absolute;
   bottom: -10px;
+  // CSS trick to align center horizontally
+  // left 0, right 0, margin 0 auto
   left: 0;
   right: 0;
   margin: 0 auto;
@@ -110,23 +114,21 @@ const Search = styled.form`
 `;
 
 const Input = styled(motion.input)`
-  position: absolute;
-  right: 0;
   z-index: 1;
-  margin-right: 60px;
+  position: absolute; // Fix posiiton for Expanding Motion
+  right: 60px; // Nav's padding-right
   padding: 5px;
-  padding-left: 30px;
+  padding-left: 40px; // space for Maginifying glass-Icon
   border: 1px solid ${(porps) => porps.theme.white.darker};
   background-color: ${(porps) => porps.theme.black.lighter};
+  font-size: 14px;
   color: ${(porps) => porps.theme.white.darker};
   transform-origin: right center;
   &::placeholder {
     font-family: "Noto Sans KR", sans-serif;
-    font-size: 11px;
+    font-size: 12px;
   }
 `;
-
-/* z-index: Nav (9) > search-icon (2) > search-input (1) > menu */
 
 const Icon = styled(motion.svg)`
   z-index: 2;
@@ -139,14 +141,16 @@ interface IForm {
 }
 
 function Header() {
+  // Routing
   const homeMatch: PathMatch<string> | null = useMatch("/");
   const tvMatch: PathMatch<string> | null = useMatch("tv");
 
-  const navAnimation = useAnimation();
+  // Nav Scroll
   const { scrollY } = useScroll();
+  const navAnimation = useAnimation();
   useEffect(() => {
     scrollY.onChange(() => {
-      if (scrollY.get() > 70) {
+      if (scrollY.get() > 80) {
         navAnimation.start("scroll");
       } else {
         navAnimation.start("top");
@@ -154,14 +158,16 @@ function Header() {
     });
   }, []);
 
-  const [searchOpen, setSearchOpen] = useState(false);
-  const toggleSearch = () => setSearchOpen((prev) => !prev);
+  // Search-form
   const { register, handleSubmit, setFocus } = useForm<IForm>();
-
   const navigate = useNavigate();
   const onSearch = (data: IForm) => {
     navigate(`/search?keyword=${data.keyword}`);
   };
+
+  // Toggle Search-input
+  const [searchOpen, setSearchOpen] = useState(false);
+  const toggleSearch = () => setSearchOpen((prev) => !prev);
 
   return (
     <Nav variants={navVariants} initial="top" animate={navAnimation}>
@@ -204,7 +210,7 @@ function Header() {
               toggleSearch();
               setFocus("keyword");
             }}
-            animate={{ x: searchOpen ? -180 : 0 }}
+            animate={{ x: searchOpen ? -185 : 0 }}
             transition={{ type: "linear" }}
             fill="currentColor"
             xmlns="http://www.w3.org/2000/svg"
@@ -218,10 +224,10 @@ function Header() {
           </Icon>
           <Input
             {...register("keyword", { required: true, minLength: 2 })}
+            minLength={2}
+            placeholder="제목, 사람, 장르"
             animate={{ scaleX: searchOpen ? 1 : 0 }}
             transition={{ type: "linear" }}
-            placeholder="제목, 사람, 장르"
-            minLength={2}
           />
         </Search>
       </Col>

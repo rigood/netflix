@@ -1,32 +1,18 @@
 import styled from "styled-components";
 
-/* Routing */
-import { useMatch, PathMatch, useNavigate } from "react-router-dom";
-
 /* Data fetching */
 import { useQuery } from "@tanstack/react-query";
-import {
-  IGetMoviesResult,
-  getAiringTodayTv,
-  getPopularTv,
-  getTopRatedTv,
-  getLatestTv,
-  getNowPlayingMovies,
-  getTopRatedMovies,
-  getUpcomingMovies,
-} from "../api";
+import { IGetMoviesResult, getAiringTodayTv, getPopularTv, getTopRatedTv } from "../api";
 
 /* Components */
 import Banner from "../Components/Banner";
-import Slider from "../Components/Slider";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 import TvSlider from "../Components/TvSlider";
 
-/* Components Styling */
-const Wrapper = styled.div``;
+/* Icons */
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 
+/* Components Styling */
 const Loader = styled.div`
   display: flex;
   flex-direction: column;
@@ -40,44 +26,43 @@ const Loader = styled.div`
   }
 `;
 
-const SlideWrapper = styled.div`
+const SliderWrapper = styled.div`
+  // Lift up to display Slider
   position: relative;
   top: -15vw;
 `;
 
 function Tv() {
+  // Data-fectching
   const useMultipleQuery = () => {
-    const latestTv = useQuery<IGetMoviesResult>(["latestTv"], getLatestTv);
     const airingTodayTv = useQuery<IGetMoviesResult>(["airingTodayTv"], getAiringTodayTv);
     const popularTv = useQuery<IGetMoviesResult>(["popularTv"], getPopularTv);
     const topRatedTv = useQuery<IGetMoviesResult>(["topRatedTv"], getTopRatedTv);
-    return [latestTv, airingTodayTv, popularTv, topRatedTv];
+    return [airingTodayTv, popularTv, topRatedTv];
   };
 
   const [
-    { isLoading: loadingLatestTv, data: latestTvData },
     { isLoading: loadingAiringTodayTv, data: airingTodayTvData },
     { isLoading: loadingPopularTv, data: popularTvData },
     { isLoading: loadingTopRatedTv, data: topRatedTvData },
   ] = useMultipleQuery();
 
-  const isLoading =
-    loadingLatestTv || loadingAiringTodayTv || loadingPopularTv || loadingTopRatedTv;
+  const isLoading = loadingAiringTodayTv || loadingPopularTv || loadingTopRatedTv;
 
   return (
-    <Wrapper>
+    <>
       {isLoading ? (
         <Loader>
-          <FontAwesomeIcon icon={faSpinner} spinPulse color="red" />
+          <FontAwesomeIcon icon={faSpinner} color="red" spinPulse />
           <h1>잠시만 기다려주세요</h1>
         </Loader>
       ) : (
         <>
-          <SlideWrapper>
+          <SliderWrapper>
             <Banner movie={airingTodayTvData?.results[0]} category="TV 쇼" />
             <TvSlider
               movies={airingTodayTvData?.results}
-              title="방영중인 TV Shows"
+              title="방영 중인 TV Shows"
               category="TV 쇼"
             />
             <TvSlider movies={popularTvData?.results} title="인기 TV 콘텐츠" category="TV 쇼" />
@@ -86,10 +71,10 @@ function Tv() {
               title="최고 평점 TV Shows"
               category="TV 쇼"
             />
-          </SlideWrapper>
+          </SliderWrapper>
         </>
       )}
-    </Wrapper>
+    </>
   );
 }
 

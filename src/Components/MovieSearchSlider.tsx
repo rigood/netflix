@@ -15,7 +15,7 @@ import {
   faClose,
   faHeart,
 } from "@fortawesome/free-solid-svg-icons";
-import useWindowDimensions from "./useWindowDimensions";
+import useWindowDimensions from "../useWindowDimensions";
 
 import { useMatch, useNavigate } from "react-router-dom";
 
@@ -23,7 +23,7 @@ interface ISliderProps {
   movies?: IMovie[];
   title: string;
   category: string;
-  keyword: string | null;
+  keyword: string;
 }
 
 const Title = styled.div`
@@ -299,7 +299,7 @@ function Slider({ movies, title, category, keyword }: ISliderProps) {
   const bigMovieMatch = useMatch("/search/movies/:movieId");
   console.log(bigMovieMatch);
   const navigate = useNavigate();
-  const onBoxClicked = (movieId: number, keyword: string | null) => {
+  const onBoxClicked = (movieId: number, keyword: string) => {
     navigate(`/search/movies/${movieId}?keyword=${keyword}`);
   };
   const onOverlayClicked = () => navigate(-1);

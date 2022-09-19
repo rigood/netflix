@@ -74,28 +74,14 @@ export function getTopRatedTv() {
 
 /* Search Data fetcher */
 
-export function getMovieSearchResults(keyword: string | null) {
+export function getMovieSearchResults(keyword: string) {
   return fetch(
     `${BASE_PATH}/search/movie?api_key=${API_KEY}&query=${keyword}&language=ko-KR&region=kr`
   ).then((response) => response.json());
 }
 
-export function getTvSearchResults(keyword: string | null) {
+export function getTvSearchResults(keyword: string) {
   return fetch(
     `${BASE_PATH}/search/tv?api_key=${API_KEY}&query=${keyword}&language=ko-KR&region=kr`
   ).then((response) => response.json());
 }
-
-/* Detail Data fetcher */
-
-// export async function getMovieDetail(id?: string) {
-//   return fetch(`${BASE_PATH}/movie/${id}?api_key=${API_KEY}&language=ko-KR`).then((response) =>
-//     response.json()
-//   );
-// }
-
-// export async function getTvDetail(id?: string) {
-//   return fetch(`${BASE_PATH}/tv/${id}?api_key=${API_KEY}&language=ko-KR`).then((response) =>
-//     response.json()
-//   );
-// }
