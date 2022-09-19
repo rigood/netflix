@@ -27,7 +27,7 @@ const Loader = styled.div`
 `;
 
 const SliderWrapper = styled.div`
-  // Lift up to display Slider
+  // Move up Slider
   position: relative;
   top: -15vw;
 `;
@@ -58,8 +58,8 @@ function Tv() {
         </Loader>
       ) : (
         <>
+          <Banner movie={airingTodayTvData?.results[6]} category="TV 쇼" />
           <SliderWrapper>
-            <Banner movie={airingTodayTvData?.results[0]} category="TV 쇼" />
             <TvSlider
               movies={airingTodayTvData?.results}
               title="방영 중인 TV Shows"

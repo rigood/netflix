@@ -208,7 +208,8 @@ const BigPoster = styled.div<{ bg: string }>`
   height: 180px;
   border-radius: 5px;
   background-image: url(${(props) => props.bg});
-  background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
   box-shadow: 6px 5px 29px 10px #000000;
 `;
 

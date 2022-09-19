@@ -32,7 +32,7 @@ const Loader = styled.div`
 `;
 
 const SliderWrapper = styled.div`
-  // Lift up to display Slider
+  // Move up Slider
   position: relative;
   top: -15vw;
 `;
@@ -63,7 +63,7 @@ function Home() {
         </Loader>
       ) : (
         <>
-          <Banner movie={nowPlayingData?.results[0]} category="영화" />
+          <Banner movie={nowPlayingData?.results[6]} category="영화" />
           <SliderWrapper>
             <Slider movies={nowPlayingData?.results} title="현재 상영 중인 영화" category="영화" />
             <Slider

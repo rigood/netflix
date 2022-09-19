@@ -4,36 +4,27 @@ import styled from "styled-components";
 import { IMovie } from "../api";
 import { makeImgPath } from "../utils";
 
-interface IBannerProps {
-  movie?: IMovie;
-  category: string;
-}
-
-const Hero = styled.div<{ bgPhoto: string }>`
+/* Components Styling */
+const Hero = styled.div<{ bg: string }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
   width: 100%;
   height: 56.25vw;
-  min-height: 350px;
-  padding: 60px;
-  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
-    url(${(props) => props.bgPhoto});
-  background-size: cover;
+  min-height: 400px; // For mobile
+  padding: 0 60px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)), url(${(props) => props.bg});
+  background-size: cover; // Fill the entire background without gaps
 `;
 
-const HeroWrapper = styled.div`
-  width: 36%;
+const ContentsWrapper = styled.div`
+  width: 40%;
 `;
 
-const Title = styled.div`
-  display: flex;
-  align-items: center;
+const Title = styled.h1`
   margin-bottom: 1vw;
-  h1 {
-    font-size: 2.5vw;
-    text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.7);
-  }
+  font-size: 2.5vw;
+  text-shadow: 0px 0px 6px rgba(0, 0, 0, 0.7);
 `;
 
 const Ranking = styled.div`
@@ -50,31 +41,36 @@ const Ranking = styled.div`
   }
 `;
 
-const Overview = styled.div`
-  p {
-    font-size: 1.2vw;
-    font-weight: 400;
-    word-break: keep-all;
-  }
+const Overview = styled.p`
+  font-size: 1.2vw;
+  font-weight: 400;
+  word-wrap: break-word;
+  word-break: keep-all;
 `;
+
+/* Interface */
+interface IBannerProps {
+  movie?: IMovie;
+  category: string;
+}
 
 function Banner({ movie, category }: IBannerProps) {
   return (
-    <Hero bgPhoto={makeImgPath(movie?.backdrop_path || "")}>
-      <HeroWrapper>
-        <Title>
-          <h1>{category === "영화" ? movie?.title : movie?.name}</h1>
-        </Title>
+    <Hero bg={makeImgPath(movie?.backdrop_path || "")}>
+      <ContentsWrapper>
+        <Title>{category === "영화" ? movie?.title : movie?.name}</Title>
         <Ranking>
-          <img src={process.env.PUBLIC_URL + "/assets/logo_sm.png"} alt="logo" />
-          <h2>오늘의 {category} 순위 1위</h2>
+          <img src={process.env.PUBLIC_URL + "/assets/logo.png"} alt="Netflix logo" />
+          <h2>오늘의 {category} 순위 7위</h2>
         </Ranking>
         <Overview>
-          <p>
-            {movie?.overview.length! > 80 ? `${movie?.overview.slice(0, 80)}...` : movie?.overview}
-          </p>
+          {movie?.overview
+            ? movie?.overview.length! > 100
+              ? `${movie?.overview.slice(0, 100)}...`
+              : movie?.overview
+            : "등록된 Overview 정보가 없습니다."}
         </Overview>
-      </HeroWrapper>
+      </ContentsWrapper>
     </Hero>
   );
 }
