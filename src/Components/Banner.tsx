@@ -42,10 +42,29 @@ const Ranking = styled.div`
 `;
 
 const Overview = styled.p`
+  margin-bottom: 1vw;
   font-size: 1.2vw;
   font-weight: 400;
   word-wrap: break-word;
   word-break: keep-all;
+`;
+
+const Info = styled.div`
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  flex-wrap: wrap;
+  font-size: 1vw;
+  font-weight: 500;
+  span {
+    padding: 0.2vw 0.6vw;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+  span:first-child {
+    margin-right: 0.5vw;
+    color: ${(props) => props.theme.green};
+  }
 `;
 
 /* Interface */
@@ -66,10 +85,18 @@ function Banner({ movie, category }: IBannerProps) {
         <Overview>
           {movie?.overview
             ? movie?.overview.length! > 100
-              ? `${movie?.overview.slice(0, 100)}...`
+              ? `${movie?.overview.slice(0, 100)}... 더보기`
               : movie?.overview
             : "등록된 Overview 정보가 없습니다."}
         </Overview>
+        <Info>
+          <span>
+            {category === "영화"
+              ? `개봉일 : ${movie?.release_date}`
+              : `첫방영 : ${movie?.first_air_date}`}
+          </span>
+          <span>평점 : ⭐{movie?.vote_average} 점</span>
+        </Info>
       </ContentsWrapper>
     </Hero>
   );

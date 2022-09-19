@@ -363,7 +363,9 @@ function Slider({ movies, title, category }: ISliderProps) {
                     <h4>{category === "영화" ? movie.title : movie.name}</h4>
                     <div className="subInfo">
                       <span>
-                        개봉 : {category === "영화" ? movie.release_date : movie.first_air_date}
+                        {category === "영화"
+                          ? `개봉일 : ${movie.release_date}`
+                          : `첫방영 : ${movie.first_air_date}`}
                       </span>
                       <span>평점 : ⭐{movie.vote_average} 점</span>
                     </div>
@@ -393,10 +395,9 @@ function Slider({ movies, title, category }: ISliderProps) {
                         </BigTitle>
                         <BigCoverSubInfo>
                           <span>
-                            첫방영 :{" "}
                             {category === "영화"
-                              ? clickedMovie.release_date
-                              : clickedMovie.first_air_date}
+                              ? `개봉일 : ${clickedMovie.release_date}`
+                              : `첫방영 : ${clickedMovie.first_air_date}`}
                           </span>
                           <span>평점 : ⭐{clickedMovie.vote_average} 점</span>
                         </BigCoverSubInfo>
