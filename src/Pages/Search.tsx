@@ -6,8 +6,7 @@ import { useLocation } from "react-router-dom";
 import { getMovieSearchResults, getTvSearchResults, IGetMoviesResult } from "../api";
 
 /* Components */
-import MovieSearchSlider from "../Components/MovieSearchSlider";
-import TvSearchSlider from "../Components/TvSearchSlider";
+import SearchSlider from "../Components/SearchSlider";
 
 /* Icons */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -59,13 +58,13 @@ function Search() {
         </Loader>
       ) : (
         <SliderWrapper>
-          <MovieSearchSlider
+          <SearchSlider
             movies={movieSearchData?.results}
             title="Movie 검색 결과"
             category="영화"
             keyword={keyword!}
           />
-          <TvSearchSlider
+          <SearchSlider
             movies={tvSearchData?.results}
             title="TV 쇼 검색 결과"
             category="TV 쇼"
