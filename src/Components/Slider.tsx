@@ -8,7 +8,7 @@ import { IMovie } from "../api";
 import { makeImgPath } from "../utils";
 
 /* Motion */
-import { motion, AnimatePresence, useScroll } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import useWindowDimensions from "../useWindowDimensions";
 import { useState } from "react";
 
@@ -182,6 +182,13 @@ const BigMovie = styled(motion.div)`
   z-index: 9999;
 `;
 
+const BigMovieWrapper = styled.div`
+  overflow: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
 const BigCover = styled.div<{ bg: string }>`
   position: relative; // To position closeBtn, BigPoster, BigCoverInfo
   width: 100%;
@@ -193,7 +200,7 @@ const BigCover = styled.div<{ bg: string }>`
     position: absolute;
     top: 5%;
     right: 5%;
-    font-size: 1.2vw;
+    font-size: 32px;
     cursor: pointer;
   }
 `;
@@ -257,7 +264,7 @@ const BigOverview = styled.p`
 const BigIcons = styled.div`
   display: flex;
   justify-content: space-around;
-  font-size: 2vw;
+  font-size: 40px;
   cursor: pointer;
   .play,
   .plus {
@@ -375,41 +382,43 @@ function Slider({ movies, title, category }: ISliderProps) {
           <>
             <Overlay onClick={onOverlayClicked} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
             <BigMovie>
-              {clickedMovie && (
-                <>
-                  <BigCover bg={makeImgPath(clickedMovie.backdrop_path, "w500")}>
-                    <BigPoster bg={makeImgPath(clickedMovie.poster_path, "w500")} />
-                    <BigCoverInfo>
-                      <BigTitle>
-                        {category === "영화" ? clickedMovie.title : clickedMovie.name}
-                      </BigTitle>
-                      <BigCoverSubInfo>
-                        <span>
-                          첫방영 :{" "}
-                          {category === "영화"
-                            ? clickedMovie.release_date
-                            : clickedMovie.first_air_date}
-                        </span>
-                        <span>평점 : ⭐{clickedMovie.vote_average} 점</span>
-                      </BigCoverSubInfo>
-                    </BigCoverInfo>
-                    <FontAwesomeIcon
-                      className="closeBtn"
-                      icon={faClose}
-                      onClick={onCloseBtnClicked}
-                    />
-                  </BigCover>
-                  <BigContent>
-                    <BigOverview>
-                      {clickedMovie.overview ? clickedMovie.overview : "준비중입니다."}
-                    </BigOverview>
-                    <BigIcons>
-                      <FontAwesomeIcon icon={faCirclePlay} className="play" bounce />
-                      <FontAwesomeIcon icon={faCirclePlus} className="plus" />
-                    </BigIcons>
-                  </BigContent>
-                </>
-              )}
+              <BigMovieWrapper>
+                {clickedMovie && (
+                  <>
+                    <BigCover bg={makeImgPath(clickedMovie.backdrop_path, "w500")}>
+                      <BigPoster bg={makeImgPath(clickedMovie.poster_path, "w500")} />
+                      <BigCoverInfo>
+                        <BigTitle>
+                          {category === "영화" ? clickedMovie.title : clickedMovie.name}
+                        </BigTitle>
+                        <BigCoverSubInfo>
+                          <span>
+                            첫방영 :{" "}
+                            {category === "영화"
+                              ? clickedMovie.release_date
+                              : clickedMovie.first_air_date}
+                          </span>
+                          <span>평점 : ⭐{clickedMovie.vote_average} 점</span>
+                        </BigCoverSubInfo>
+                      </BigCoverInfo>
+                      <FontAwesomeIcon
+                        className="closeBtn"
+                        icon={faClose}
+                        onClick={onCloseBtnClicked}
+                      />
+                    </BigCover>
+                    <BigContent>
+                      <BigOverview>
+                        {clickedMovie.overview ? clickedMovie.overview : "준비중입니다."}
+                      </BigOverview>
+                      <BigIcons>
+                        <FontAwesomeIcon icon={faCirclePlay} className="play" bounce />
+                        <FontAwesomeIcon icon={faCirclePlus} className="plus" />
+                      </BigIcons>
+                    </BigContent>
+                  </>
+                )}
+              </BigMovieWrapper>
             </BigMovie>
           </>
         ) : null}
