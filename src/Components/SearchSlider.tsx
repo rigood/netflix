@@ -96,9 +96,6 @@ const Arrow = styled.div`
   }
 `;
 
-const LeftArrow = styled(Arrow)`
-  left: 0;
-`;
 const RightArrow = styled(Arrow)`
   right: 0;
 `;
@@ -212,6 +209,12 @@ const BigPoster = styled.div<{ bg: string }>`
   background-size: contain; // Preserve aspect-ratio
   background-repeat: no-repeat;
   box-shadow: 6px 5px 29px 10px #000000;
+  cursor: pointer;
+  transition: all 0.5s ease-in-out;
+  transform-origin: right bottom;
+  &:hover {
+    scale: 2;
+  }
 `;
 
 const BigCoverInfo = styled.div`
@@ -280,9 +283,7 @@ function Slider({ movies, title, category, keyword }: ISliderProps) {
   const width = useWindowDimensions();
 
   // Slide Movement
-  const [back, setBack] = useState(false);
   const [movingNext, setMovingNext] = useState(false);
-  const [movingPrev, setMovingPrev] = useState(false);
 
   const offset = 6;
   const [index, setIndex] = useState(0);
@@ -293,21 +294,11 @@ function Slider({ movies, title, category, keyword }: ISliderProps) {
     if (movies) {
       if (movingNext) return;
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
-      setBack(false);
       setMovingNext(true);
-    }
-  };
-  const decreaseIndex = () => {
-    if (movies) {
-      if (movingPrev) return;
-      setIndex((prev) => prev - 1);
-      setBack(true);
-      setMovingPrev(true);
     }
   };
   const onExitToggleMoving = () => {
     setMovingNext((prev) => !prev);
-    setMovingPrev((prev) => !prev);
   };
 
   // Modal
@@ -335,18 +326,12 @@ function Slider({ movies, title, category, keyword }: ISliderProps) {
       <Title>{title}</Title>
 
       <SlideWrapper>
-        {index === 0 ? null : (
-          <LeftArrow onClick={decreaseIndex}>
-            <FontAwesomeIcon icon={faAngleLeft} />
-          </LeftArrow>
-        )}
-
         <AnimatePresence initial={false} onExitComplete={onExitToggleMoving}>
           <Row
             key={index}
-            initial={{ x: back ? "-100vw" : width - 130 }}
+            initial={{ x: width - 130 }}
             animate={{ x: 0 }}
-            exit={{ x: back ? "100vw" : -width + 60 }}
+            exit={{ x: -width + 60 }}
             transition={{ type: "tween", duration: 0.7 }}
           >
             {movies
