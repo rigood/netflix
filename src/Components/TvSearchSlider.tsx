@@ -23,6 +23,7 @@ interface ISliderProps {
   movies?: IMovie[];
   title: string;
   category: string;
+  keyword: string | null;
 }
 
 const Title = styled.div`
@@ -263,7 +264,7 @@ const BigIcons = styled.div`
 
 const offset = 6;
 
-function Slider({ movies, title, category }: ISliderProps) {
+function Slider({ movies, title, category, keyword }: ISliderProps) {
   const width = useWindowDimensions();
 
   const [back, setBack] = useState(false);
@@ -295,11 +296,11 @@ function Slider({ movies, title, category }: ISliderProps) {
     setMovingPrev(false);
   };
 
-  const bigMovieMatch = useMatch("/movies/:movieId");
+  const bigMovieMatch = useMatch("/search/tv/:movieId");
   console.log(bigMovieMatch);
   const navigate = useNavigate();
-  const onBoxClicked = (movieId: number) => {
-    navigate(`/movies/${movieId}`);
+  const onBoxClicked = (movieId: number, keyword: string | null) => {
+    navigate(`/search/tv/${movieId}?keyword=${keyword}`);
   };
   const onOverlayClicked = () => navigate(-1);
   const onCloseBtnClicked = () => navigate(-1);
@@ -338,7 +339,7 @@ function Slider({ movies, title, category }: ISliderProps) {
                   variants={boxVariants}
                   whileHover="hover"
                   initial="normal"
-                  onClick={() => onBoxClicked(movie.id)}
+                  onClick={() => onBoxClicked(movie.id, keyword)}
                 >
                   <Info variants={infoVariants}>
                     <div className="icons">
@@ -353,7 +354,7 @@ function Slider({ movies, title, category }: ISliderProps) {
                     <h4>{category === "영화" ? movie.title : movie.name}</h4>
                     <div className="subInfo">
                       <span>
-                        개봉 : {category === "영화" ? movie.release_date : movie.first_air_date}
+                        첫방영 : {category === "영화" ? movie.release_date : movie.first_air_date}
                       </span>
                       <span>평점 : ⭐{movie.vote_average} 점</span>
                     </div>
@@ -376,9 +377,9 @@ function Slider({ movies, title, category }: ISliderProps) {
                   <BigCover bg={makeImgPath(clickedMovie.poster_path, "w500")}>
                     <BigPoster bg={makeImgPath(clickedMovie.poster_path, "w500")} />
                     <BigCoverInfo>
-                      <BigTitle>{clickedMovie.title}</BigTitle>
+                      <BigTitle>{clickedMovie.name}</BigTitle>
                       <BigSubInfo>
-                        <span>개봉 : {clickedMovie.release_date}</span>
+                        <span>첫방영 : {clickedMovie.first_air_date}</span>
                         <span>평점 : ⭐{clickedMovie.vote_average} 점</span>
                       </BigSubInfo>
                     </BigCoverInfo>

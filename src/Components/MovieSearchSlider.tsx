@@ -23,6 +23,7 @@ interface ISliderProps {
   movies?: IMovie[];
   title: string;
   category: string;
+  keyword: string | null;
 }
 
 const Title = styled.div`
@@ -263,7 +264,7 @@ const BigIcons = styled.div`
 
 const offset = 6;
 
-function Slider({ movies, title, category }: ISliderProps) {
+function Slider({ movies, title, category, keyword }: ISliderProps) {
   const width = useWindowDimensions();
 
   const [back, setBack] = useState(false);
@@ -295,11 +296,11 @@ function Slider({ movies, title, category }: ISliderProps) {
     setMovingPrev(false);
   };
 
-  const bigMovieMatch = useMatch("/movies/:movieId");
+  const bigMovieMatch = useMatch("/search/movies/:movieId");
   console.log(bigMovieMatch);
   const navigate = useNavigate();
-  const onBoxClicked = (movieId: number) => {
-    navigate(`/movies/${movieId}`);
+  const onBoxClicked = (movieId: number, keyword: string | null) => {
+    navigate(`/search/movies/${movieId}?keyword=${keyword}`);
   };
   const onOverlayClicked = () => navigate(-1);
   const onCloseBtnClicked = () => navigate(-1);
@@ -338,7 +339,7 @@ function Slider({ movies, title, category }: ISliderProps) {
                   variants={boxVariants}
                   whileHover="hover"
                   initial="normal"
-                  onClick={() => onBoxClicked(movie.id)}
+                  onClick={() => onBoxClicked(movie.id, keyword)}
                 >
                   <Info variants={infoVariants}>
                     <div className="icons">

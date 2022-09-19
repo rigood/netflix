@@ -13,6 +13,7 @@ const Hero = styled.div<{ bgPhoto: string }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  width: 100%;
   height: 56.25vw;
   min-height: 350px;
   padding: 60px;

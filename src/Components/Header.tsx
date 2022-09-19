@@ -221,6 +221,7 @@ function Header() {
             animate={{ scaleX: searchOpen ? 1 : 0 }}
             transition={{ type: "linear" }}
             placeholder="제목, 사람, 장르"
+            minLength={2}
           />
         </Search>
       </Col>
