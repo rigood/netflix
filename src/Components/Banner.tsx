@@ -12,7 +12,7 @@ const Hero = styled.div<{ bg: string }>`
   width: 100%;
   height: 56.25vw;
   min-height: 400px; // For mobile
-  padding: 0 60px;
+  padding: 0px 60px;
   background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)), url(${(props) => props.bg});
   background-size: cover; // Fill the entire background without gaps
 `;

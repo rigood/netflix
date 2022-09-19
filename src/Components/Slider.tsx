@@ -15,7 +15,6 @@ import { useState } from "react";
 /* Icons */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faAngleLeft,
   faAngleRight,
   faCirclePlay,
   faCirclePlus,

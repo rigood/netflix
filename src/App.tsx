@@ -1,5 +1,5 @@
 /* Routing */
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
 /* Components */
 import Header from "./Components/Header";
@@ -13,7 +13,7 @@ function App() {
   /* v5 start with 방식으로 경로 매치, 배치순서 중요 */
   /* v6 full match 방식으로 경로 매치, 배치순서 무관 */
   return (
-    <BrowserRouter basename={process.env.PUBLIC_URL}>
+    <HashRouter>
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -24,7 +24,7 @@ function App() {
         <Route path="/search/movies/:id" element={<Search />} />
         <Route path="/search/tv/:id" element={<Search />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
