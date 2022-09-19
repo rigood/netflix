@@ -211,7 +211,7 @@ const BigPoster = styled.div<{ bg: string }>`
   right: 5%;
   width: 120px;
   height: 180px;
-  border-radius: 5px;
+  border-radius: 10px;
   background-image: url(${(props) => props.bg});
   background-size: contain; // Preserve aspect-ratio
   background-repeat: no-repeat;
@@ -232,16 +232,16 @@ const BigCoverInfo = styled.div`
 `;
 
 const BigTitle = styled.h1`
-  margin-bottom: 0.5vw;
-  font-size: 2vw; ;
+  margin-bottom: 10px;
+  font-size: 32px; ;
 `;
 
 const BigCoverSubInfo = styled.div`
   // Date, Rating Information
-  margin-bottom: 1vw;
-  font-size: 0.8vw;
+  margin-bottom: 20px;
+  font-size: 16px;
   span:first-child {
-    margin-right: 0.5vw;
+    margin-right: 10px;
     color: ${(props) => props.theme.green};
   }
 `;
@@ -257,7 +257,7 @@ const BigOverview = styled.p`
   width: 90%;
   word-wrap: break-word;
   word-break: keep-all;
-  font-size: 0.8vw;
+  font-size: 14px;
   font-weight: 300;
 `;
 
