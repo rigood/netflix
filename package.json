@@ -14,6 +14,7 @@
     "@types/react": "^18.0.20",
     "@types/react-dom": "^18.0.6",
     "framer-motion": "^7.3.5",
+    "gh-pages": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.35.0",
@@ -57,5 +58,5 @@
     "@types/react-router-dom": "^5.3.3",
     "@types/styled-components": "^5.1.26"
   },
-  "homepage" : "https://rigood.github.io/netflix"
+  "homepage": "https://rigood.github.io/netflix"
 }
