@@ -6,11 +6,11 @@ import { IGetMoviesResult, getAiringTodayTv, getPopularTv, getTopRatedTv } from 
 
 /* Components */
 import Banner from "../Components/Banner";
-import TvSlider from "../Components/TvSlider";
 
 /* Icons */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import Slider from "../Components/Slider";
 
 /* Components Styling */
 const Loader = styled.div`
@@ -60,17 +60,13 @@ function Tv() {
         <>
           <Banner movie={airingTodayTvData?.results[6]} category="TV 쇼" />
           <SliderWrapper>
-            <TvSlider
+            <Slider
               movies={airingTodayTvData?.results}
               title="방영 중인 TV Shows"
               category="TV 쇼"
             />
-            <TvSlider movies={popularTvData?.results} title="인기 TV 콘텐츠" category="TV 쇼" />
-            <TvSlider
-              movies={topRatedTvData?.results}
-              title="최고 평점 TV Shows"
-              category="TV 쇼"
-            />
+            <Slider movies={popularTvData?.results} title="인기 TV 콘텐츠" category="TV 쇼" />
+            <Slider movies={topRatedTvData?.results} title="최고 평점 TV Shows" category="TV 쇼" />
           </SliderWrapper>
         </>
       )}
