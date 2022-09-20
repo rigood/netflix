@@ -20,6 +20,21 @@ export interface IGetMoviesResult {
   total_results: number;
 }
 
+export interface IGenres {
+  id: number;
+  name: string;
+}
+
+export interface IGetDetailResult {
+  id: number;
+  title: string;
+  name: string;
+  genres: IGenres[];
+  runtime: number;
+  number_of_episodes: number;
+  number_of_seasons: number;
+}
+
 /* Movie Data fetcher */
 
 export function getNowPlayingMovies() {
@@ -84,4 +99,18 @@ export function getTvSearchResults(keyword: string) {
   return fetch(
     `${BASE_PATH}/search/tv?api_key=${API_KEY}&query=${keyword}&language=ko-KR&region=kr`
   ).then((response) => response.json());
+}
+
+/* Detail Data fetcher */
+
+export function getDetailMovie(id: string) {
+  return fetch(`${BASE_PATH}/movie/${id}?api_key=${API_KEY}&language=ko-KR&region=kr`).then(
+    (response) => response.json()
+  );
+}
+
+export function getDetailTv(id: string) {
+  return fetch(`${BASE_PATH}/tv/${id}?api_key=${API_KEY}&language=ko-KR&region=kr`).then(
+    (response) => response.json()
+  );
 }

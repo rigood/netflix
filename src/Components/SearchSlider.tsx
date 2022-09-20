@@ -4,7 +4,8 @@ import styled from "styled-components";
 import { useMatch, useNavigate } from "react-router-dom";
 
 /* Data fetching */
-import { IMovie } from "../api";
+import { useQuery } from "@tanstack/react-query";
+import { getDetailMovie, getDetailTv, IGetDetailResult, IMovie } from "../api";
 import { makeImgPath } from "../utils";
 
 /* Motion */
@@ -240,12 +241,34 @@ const BigTitle = styled.h1`
   font-size: 32px; ;
 `;
 
+const BigCoverGenres = styled.div`
+  margin-bottom: 10px;
+  span {
+    margin-right: 10px;
+    padding: 2px 4px;
+    border-radius: 6px;
+    background-color: ${(props) => props.theme.red};
+    font-size: 14px;
+    font-weight: 400;
+  }
+`;
+
+const BigCoverNumber = styled.div`
+  margin-bottom: 10px;
+  span {
+    font-size: 14px;
+    font-weight: 400;
+  }
+`;
+
 const BigCoverSubInfo = styled.div`
   // Date, Rating Information
   margin-bottom: 20px;
   font-size: 16px;
-  span:first-child {
+  span:not(last-child) {
     margin-right: 10px;
+  }
+  span:first-child {
     color: ${(props) => props.theme.green};
   }
 `;
@@ -356,6 +379,15 @@ function Slider({ movies, title, category, keyword }: ISliderProps) {
     bigMovieMatch?.params.movieId &&
     movies?.find((movie) => String(movie.id) === bigMovieMatch.params.movieId);
 
+  // Data-fetching for detail movie data in Modal
+  const detailId = bigMovieMatch?.params.movieId;
+  const { data: detailMovieData } = useQuery<IGetDetailResult>(["detailMovie", detailId], () =>
+    getDetailMovie(detailId || "")
+  );
+  const { data: detailTvData } = useQuery<IGetDetailResult>(["detailTv", detailId], () =>
+    getDetailTv(detailId || "")
+  );
+
   return (
     <>
       <Title>{title}</Title>
@@ -423,6 +455,22 @@ function Slider({ movies, title, category, keyword }: ISliderProps) {
                     <BigCover bg={makeImgPath(clickedMovie.backdrop_path, "w500")}>
                       <BigPoster bg={makeImgPath(clickedMovie.poster_path, "w500")} />
                       <BigCoverInfo>
+                        <BigCoverGenres>
+                          {category === "영화"
+                            ? detailMovieData?.genres.map((genre) => {
+                                return <span>{genre.name}</span>;
+                              })
+                            : detailTvData?.genres.map((genre) => {
+                                return <span>{genre.name}</span>;
+                              })}
+                        </BigCoverGenres>
+                        <BigCoverNumber>
+                          <span>
+                            {category === "영화"
+                              ? `상영시간 : ${detailMovieData?.runtime}분`
+                              : `시즌 ${detailTvData?.number_of_seasons}개 에피소드 ${detailTvData?.number_of_episodes}개`}
+                          </span>
+                        </BigCoverNumber>
                         <BigTitle>
                           {category === "영화" ? clickedMovie.title : clickedMovie.name}
                         </BigTitle>
