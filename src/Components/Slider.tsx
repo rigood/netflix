@@ -15,6 +15,7 @@ import { useState } from "react";
 /* Icons */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faAngleLeft,
   faAngleRight,
   faCirclePlay,
   faCirclePlus,
@@ -77,11 +78,11 @@ const boxVariants = {
   },
 };
 
-const Arrow = styled.div`
+const Handle = styled.div`
   display: flex;
   justify-content: center; // horizontally
   align-items: flex-start; // vertically
-  position: absolute; // To position arrow-icon
+  position: absolute; // To position Handle-icon
   top: 3.5vw; // SlideWrapper's heigt : 15vw
   width: 60px; // parent(Row)'s padding-lr 60px
   font-size: 2vw;
@@ -95,7 +96,11 @@ const Arrow = styled.div`
   }
 `;
 
-const RightArrow = styled(Arrow)`
+const LeftHandle = styled(Handle)`
+  left: 0;
+`;
+
+const RightHandle = styled(Handle)`
   right: 0;
 `;
 
@@ -283,12 +288,25 @@ interface ISliderProps {
   category: string;
 }
 
+const rowVariants = {
+  enter: (movingBack: boolean) => ({
+    x: movingBack ? "-100vw" : "100vw",
+  }),
+  visible: {
+    x: 0,
+  },
+  exit: (movingBack: boolean) => ({
+    x: movingBack ? "100vw" : "-100vw",
+  }),
+};
+
 function Slider({ movies, title, category }: ISliderProps) {
   // Window-width
   const width = useWindowDimensions();
 
   // Slide Movement
-  const [movingNext, setMovingNext] = useState(false);
+  const [leaving, setLeaving] = useState(false);
+  const [movingBack, setMovingBack] = useState(false);
 
   const offset = 6;
   const [index, setIndex] = useState(0);
@@ -297,13 +315,24 @@ function Slider({ movies, title, category }: ISliderProps) {
 
   const increaseIndex = () => {
     if (movies) {
-      if (movingNext) return;
+      if (leaving) return;
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
-      setMovingNext(true);
+      setLeaving(true);
     }
   };
+
+  const decreaseIndex = () => {
+    if (movies) {
+      if (leaving) return;
+      setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
+      setLeaving(true);
+      setMovingBack(true);
+    }
+  };
+
   const onExitToggleMoving = () => {
-    setMovingNext((prev) => !prev);
+    setMovingBack(false);
+    setLeaving((prev) => !prev);
   };
 
   // Modal
@@ -329,13 +358,18 @@ function Slider({ movies, title, category }: ISliderProps) {
       <Title>{title}</Title>
 
       <SlideWrapper>
-        <AnimatePresence initial={false} onExitComplete={onExitToggleMoving}>
+        <LeftHandle onClick={decreaseIndex}>
+          <FontAwesomeIcon icon={faAngleLeft} />
+        </LeftHandle>
+        <AnimatePresence initial={false} onExitComplete={onExitToggleMoving} custom={movingBack}>
           <Row
             key={index}
-            initial={{ x: width - 130 }}
-            animate={{ x: 0 }}
-            exit={{ x: -width + 60 }}
-            transition={{ type: "tween", duration: 0.7 }}
+            variants={rowVariants}
+            initial="enter"
+            animate="visible"
+            exit="exit"
+            custom={movingBack}
+            transition={{ type: "tween", duration: 0.5 }}
           >
             {movies
               ?.slice(1)
@@ -373,9 +407,9 @@ function Slider({ movies, title, category }: ISliderProps) {
               ))}
           </Row>
         </AnimatePresence>
-        <RightArrow onClick={increaseIndex}>
+        <RightHandle onClick={increaseIndex}>
           <FontAwesomeIcon icon={faAngleRight} />
-        </RightArrow>
+        </RightHandle>
       </SlideWrapper>
 
       <AnimatePresence>

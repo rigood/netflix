@@ -26,9 +26,21 @@ const Loader = styled.div`
   }
 `;
 
-const SliderWrapper = styled.div`
+const Notification = styled.h1`
   // Space for Header
-  margin-top: 160px;
+  margin-top: 140px;
+  padding: 0 60px;
+  font-size: 20px;
+  font-weight: 500;
+  color: #808080;
+  strong {
+    font-weight: 700;
+    color: ${(props) => props.theme.white.darker};
+  }
+`;
+
+const SliderWrapper = styled.div`
+  margin-top: 70px;
 `;
 
 function Search() {
@@ -57,20 +69,25 @@ function Search() {
           <h1>잠시만 기다려주세요</h1>
         </Loader>
       ) : (
-        <SliderWrapper>
-          <SearchSlider
-            movies={movieSearchData?.results}
-            title="Movie 검색 결과"
-            category="영화"
-            keyword={keyword!}
-          />
-          <SearchSlider
-            movies={tvSearchData?.results}
-            title="TV 쇼 검색 결과"
-            category="TV 쇼"
-            keyword={keyword!}
-          />
-        </SliderWrapper>
+        <>
+          <Notification>
+            검색 결과는 <strong>최대 20건</strong> 까지 표시됩니다.
+          </Notification>
+          <SliderWrapper>
+            <SearchSlider
+              movies={movieSearchData?.results}
+              title={`영화 검색 결과 (${movieSearchData?.results.length}건)`}
+              category="영화"
+              keyword={keyword!}
+            />
+            <SearchSlider
+              movies={tvSearchData?.results}
+              title={`TV 쇼 검색 결과 (${tvSearchData?.results.length}건)`}
+              category="TV 쇼"
+              keyword={keyword!}
+            />
+          </SliderWrapper>
+        </>
       )}
     </>
   );
