@@ -35,6 +35,17 @@ export interface IGetDetailResult {
   number_of_seasons: number;
 }
 
+export interface ICast {
+  name: string;
+  original_name: string;
+  profile_path: string;
+  character: string;
+}
+
+export interface IGetCreditsResult {
+  cast: ICast[];
+}
+
 /* Movie Data fetcher */
 
 export function getNowPlayingMovies() {
@@ -111,6 +122,20 @@ export function getDetailMovie(id: string) {
 
 export function getDetailTv(id: string) {
   return fetch(`${BASE_PATH}/tv/${id}?api_key=${API_KEY}&language=ko-KR&region=kr`).then(
+    (response) => response.json()
+  );
+}
+
+/* Cast Data fetcher */
+
+export function getCreditsMovie(id: string) {
+  return fetch(`${BASE_PATH}/movie/${id}/credits?api_key=${API_KEY}&language=ko-KR&region=kr`).then(
+    (response) => response.json()
+  );
+}
+
+export function getCreditsTv(id: string) {
+  return fetch(`${BASE_PATH}/tv/${id}/credits?api_key=${API_KEY}&language=ko-KR&region=kr`).then(
     (response) => response.json()
   );
 }

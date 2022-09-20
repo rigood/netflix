@@ -5,7 +5,15 @@ import { useMatch, useNavigate } from "react-router-dom";
 
 /* Data fetching */
 import { useQuery } from "@tanstack/react-query";
-import { getDetailMovie, getDetailTv, IGetDetailResult, IMovie } from "../api";
+import {
+  getCreditsMovie,
+  getCreditsTv,
+  getDetailMovie,
+  getDetailTv,
+  IGetCreditsResult,
+  IGetDetailResult,
+  IMovie,
+} from "../api";
 import { makeImgPath } from "../utils";
 
 /* Motion */
@@ -203,8 +211,8 @@ const BigCover = styled.div<{ bg: string }>`
   background-position: center top;
   .closeBtn {
     position: absolute;
-    top: 5%;
-    right: 5%;
+    top: 7%;
+    right: 7%;
     font-size: 32px;
     cursor: pointer;
   }
@@ -305,6 +313,32 @@ const BigIcons = styled.div`
   }
 `;
 
+const BigCast = styled.div`
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 15px;
+  width: 100%;
+  padding: 0% 5% 5% 5%;
+  text-align: center;
+  .name {
+    font-size: 14px;
+  }
+  .character {
+    font-size: 12px;
+    font-weight: 300;
+    font-style: italic;
+  }
+`;
+
+const BigCastImg = styled.div<{ bg: string }>`
+  width: 100%;
+  height: 200px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  background-image: url(${(props) => props.bg});
+  background-size: cover;
+`;
+
 interface ISliderProps {
   movies?: IMovie[];
   title: string;
@@ -386,6 +420,12 @@ function Slider({ movies, title, category, keyword }: ISliderProps) {
   );
   const { data: detailTvData } = useQuery<IGetDetailResult>(["detailTv", detailId], () =>
     getDetailTv(detailId || "")
+  );
+  const { data: castMovieData } = useQuery<IGetCreditsResult>(["castMovie", detailId], () =>
+    getCreditsMovie(detailId || "")
+  );
+  const { data: castTvData } = useQuery<IGetCreditsResult>(["castTv", detailId], () =>
+    getCreditsTv(detailId || "")
   );
 
   return (
@@ -498,6 +538,27 @@ function Slider({ movies, title, category, keyword }: ISliderProps) {
                         <FontAwesomeIcon icon={faCirclePlus} className="plus" />
                       </BigIcons>
                     </BigContent>
+                    <BigCast>
+                      {category === "영화"
+                        ? castMovieData?.cast.slice(0, 5).map((actor, index) => {
+                            return (
+                              <div key={index}>
+                                <BigCastImg bg={makeImgPath(actor.profile_path, "w200")} />
+                                <div className="name">{actor.name}</div>
+                                <div className="character">{actor.character}</div>
+                              </div>
+                            );
+                          })
+                        : castTvData?.cast.slice(0, 5).map((actor, index) => {
+                            return (
+                              <div key={index}>
+                                <BigCastImg bg={makeImgPath(actor.profile_path, "w200")} />
+                                <div className="name">{actor.name}</div>
+                                <div className="character">{actor.character}</div>
+                              </div>
+                            );
+                          })}
+                    </BigCast>
                   </>
                 )}
               </BigMovieWrapper>
