@@ -13,8 +13,8 @@
         position: absolute;
         top: 0;
         z-index: 9999;
-        width: 100%;
-        height: 100%;
+        width: 100vw;
+        height: 100vh;
         background-color: black;
         font-size: 5vw;
         color: white;
@@ -25,6 +25,11 @@
       @media screen and (min-width: 768px) {
         #media-query {
           display: none;
+        }
+      }
+      @media screen and (max-width: 767px) {
+        html {
+          overflow-y: hidden;
         }
       }
     </style>

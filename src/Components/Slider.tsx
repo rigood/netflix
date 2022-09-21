@@ -93,9 +93,9 @@ const Handle = styled.div`
   align-items: flex-start; // vertically
   position: absolute; // To position Handle-icon
   top: 3.5vw; // SlideWrapper's heigt : 15vw
+  z-index: 1;
   width: 60px; // parent(Row)'s padding-lr 60px
   font-size: 2vw;
-  z-index: 1;
   cursor: pointer;
   opacity: 0;
   transition: all 0.5s ease-in-out;
@@ -171,35 +171,27 @@ const infoVariants = {
 const Overlay = styled(motion.div)`
   position: fixed;
   top: 0;
+  z-index: 10; // To hide Header Nav
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.4);
-  opacity: 0;
+  opacity: 0; // for animation 0->1->0
 `;
 
 const BigMovie = styled(motion.div)`
   position: fixed;
-  // CSS trick to align center
-  // top, bottom, left, right 0, margin auto
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  margin: auto;
+  margin: 0 auto;
+  z-index: 9999; // On top of Overlay
   width: 90%;
   max-width: 900px;
   height: fit-content;
   border-radius: 0.5vw;
   background-color: black;
   overflow: hidden;
-  z-index: 9999;
-`;
-
-const BigMovieWrapper = styled.div`
-  overflow: auto;
-  &::-webkit-scrollbar {
-    display: none;
-  }
 `;
 
 const BigCover = styled.div<{ bg: string }>`
@@ -238,15 +230,10 @@ const BigPoster = styled.div<{ bg: string }>`
 `;
 
 const BigCoverInfo = styled.div`
-  // Parent of BigTitle, BigCoverSubInfo
+  // Parent of BigCoverGenres, BigCoverNumber, BigTitle, BigCoverSubInfo
   position: absolute;
   bottom: 0%;
   left: 5%;
-`;
-
-const BigTitle = styled.h1`
-  margin-bottom: 10px;
-  font-size: 32px; ;
 `;
 
 const BigCoverGenres = styled.div`
@@ -267,6 +254,11 @@ const BigCoverNumber = styled.div`
     font-size: 14px;
     font-weight: 400;
   }
+`;
+
+const BigTitle = styled.h1`
+  margin-bottom: 10px;
+  font-size: 32px; ;
 `;
 
 const BigCoverSubInfo = styled.div`
@@ -345,15 +337,20 @@ interface ISliderProps {
   category: string;
 }
 
+interface IRowVariantsProps {
+  movingBack: boolean;
+  width: number;
+}
+
 const rowVariants = {
-  enter: (movingBack: boolean) => ({
-    x: movingBack ? "-100vw" : "100vw",
+  enter: ({ movingBack, width }: IRowVariantsProps) => ({
+    x: movingBack ? -width + 10 : width - 120,
   }),
   visible: {
     x: 0,
   },
-  exit: (movingBack: boolean) => ({
-    x: movingBack ? "100vw" : "-100vw",
+  exit: ({ movingBack, width }: IRowVariantsProps) => ({
+    x: movingBack ? width - 120 : -width + 10,
   }),
 };
 
@@ -433,14 +430,18 @@ function Slider({ movies, title, category }: ISliderProps) {
         <LeftHandle onClick={decreaseIndex}>
           <FontAwesomeIcon icon={faAngleLeft} />
         </LeftHandle>
-        <AnimatePresence initial={false} onExitComplete={onExitToggleMoving} custom={movingBack}>
+        <AnimatePresence
+          initial={false}
+          onExitComplete={onExitToggleMoving}
+          custom={{ movingBack, width }}
+        >
           <Row
             key={index}
             variants={rowVariants}
             initial="enter"
             animate="visible"
             exit="exit"
-            custom={movingBack}
+            custom={{ movingBack, width }}
             transition={{ type: "tween", duration: 0.5 }}
           >
             {movies
@@ -489,79 +490,78 @@ function Slider({ movies, title, category }: ISliderProps) {
           <>
             <Overlay onClick={onOverlayClicked} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
             <BigMovie>
-              <BigMovieWrapper>
-                {clickedMovie && (
-                  <>
-                    <BigCover bg={makeImgPath(clickedMovie.backdrop_path, "w500")}>
-                      <BigPoster bg={makeImgPath(clickedMovie.poster_path, "w500")} />
-                      <BigCoverInfo>
-                        <BigCoverGenres>
+              {clickedMovie && (
+                <>
+                  <BigCover bg={makeImgPath(clickedMovie.backdrop_path, "w500")}>
+                    <BigPoster bg={makeImgPath(clickedMovie.poster_path, "w500")} />
+                    <BigCoverInfo>
+                      <BigCoverGenres>
+                        {category === "영화"
+                          ? detailMovieData?.genres.map((genre) => {
+                              return <span key={genre.id}>{genre.name}</span>;
+                            })
+                          : detailTvData?.genres.map((genre) => {
+                              return <span key={genre.id}>{genre.name}</span>;
+                            })}
+                      </BigCoverGenres>
+                      <BigCoverNumber>
+                        <span>
                           {category === "영화"
-                            ? detailMovieData?.genres.map((genre) => {
-                                return <span key={genre.id}>{genre.name}</span>;
-                              })
-                            : detailTvData?.genres.map((genre) => {
-                                return <span key={genre.id}>{genre.name}</span>;
-                              })}
-                        </BigCoverGenres>
-                        <BigCoverNumber>
-                          <span>
-                            {category === "영화"
-                              ? `상영시간 : ${detailMovieData?.runtime}분`
-                              : `시즌 ${detailTvData?.number_of_seasons}개 에피소드 ${detailTvData?.number_of_episodes}개`}
-                          </span>
-                        </BigCoverNumber>
-                        <BigTitle>
-                          {category === "영화" ? clickedMovie.title : clickedMovie.name}
-                        </BigTitle>
-                        <BigCoverSubInfo>
-                          <span>
-                            {category === "영화"
-                              ? `개봉일 : ${clickedMovie.release_date}`
-                              : `첫방영 : ${clickedMovie.first_air_date}`}
-                          </span>
-                          <span>평점 : ⭐{clickedMovie.vote_average} 점</span>
-                        </BigCoverSubInfo>
-                      </BigCoverInfo>
-                      <FontAwesomeIcon
-                        className="closeBtn"
-                        icon={faClose}
-                        onClick={onCloseBtnClicked}
-                      />
-                    </BigCover>
-                    <BigContent>
-                      <BigOverview>
-                        {clickedMovie.overview ? clickedMovie.overview : "준비중입니다."}
-                      </BigOverview>
-                      <BigIcons>
-                        <FontAwesomeIcon icon={faCirclePlay} className="play" bounce />
-                        <FontAwesomeIcon icon={faCirclePlus} className="plus" />
-                      </BigIcons>
-                    </BigContent>
-                    <BigCast>
-                      {category === "영화"
-                        ? castMovieData?.cast.slice(0, 5).map((actor, index) => {
-                            return (
-                              <div key={index}>
-                                <BigCastImg bg={makeImgPath(actor.profile_path, "w200")} />
-                                <div className="name">{actor.name}</div>
-                                <div className="character">{actor.character}</div>
-                              </div>
-                            );
-                          })
-                        : castTvData?.cast.slice(0, 5).map((actor, index) => {
-                            return (
-                              <div key={index}>
-                                <BigCastImg bg={makeImgPath(actor.profile_path, "w200")} />
-                                <div className="name">{actor.name}</div>
-                                <div className="character">{actor.character}</div>
-                              </div>
-                            );
-                          })}
-                    </BigCast>
-                  </>
-                )}
-              </BigMovieWrapper>
+                            ? `상영시간 : ${detailMovieData?.runtime}분`
+                            : `시즌 ${detailTvData?.number_of_seasons}개 에피소드 ${detailTvData?.number_of_episodes}개`}
+                        </span>
+                      </BigCoverNumber>
+                      <BigTitle>
+                        {category === "영화" ? clickedMovie.title : clickedMovie.name}
+                      </BigTitle>
+                      <BigCoverSubInfo>
+                        <span>
+                          {category === "영화"
+                            ? `개봉일 : ${clickedMovie.release_date}`
+                            : `첫방영 : ${clickedMovie.first_air_date}`}
+                        </span>
+                        <span>평점 : ⭐{clickedMovie.vote_average} 점</span>
+                      </BigCoverSubInfo>
+                    </BigCoverInfo>
+                    <FontAwesomeIcon
+                      className="closeBtn"
+                      icon={faClose}
+                      onClick={onCloseBtnClicked}
+                    />
+                  </BigCover>
+
+                  <BigContent>
+                    <BigOverview>
+                      {clickedMovie.overview ? clickedMovie.overview : "준비중입니다."}
+                    </BigOverview>
+                    <BigIcons>
+                      <FontAwesomeIcon icon={faCirclePlay} className="play" bounce />
+                      <FontAwesomeIcon icon={faCirclePlus} className="plus" />
+                    </BigIcons>
+                  </BigContent>
+                  <BigCast>
+                    {category === "영화"
+                      ? castMovieData?.cast.slice(0, 5).map((actor, index) => {
+                          return (
+                            <div key={index}>
+                              <BigCastImg bg={makeImgPath(actor.profile_path, "w200")} />
+                              <div className="name">{actor.name}</div>
+                              <div className="character">{actor.character}</div>
+                            </div>
+                          );
+                        })
+                      : castTvData?.cast.slice(0, 5).map((actor, index) => {
+                          return (
+                            <div key={index}>
+                              <BigCastImg bg={makeImgPath(actor.profile_path, "w200")} />
+                              <div className="name">{actor.name}</div>
+                              <div className="character">{actor.character}</div>
+                            </div>
+                          );
+                        })}
+                  </BigCast>
+                </>
+              )}
             </BigMovie>
           </>
         ) : null}

@@ -114,7 +114,6 @@ const Search = styled.form`
 `;
 
 const Input = styled(motion.input)`
-  z-index: 1;
   position: absolute; // Fix posiiton for Expanding Motion
   right: 60px; // Nav's padding-right
   padding: 5px;
@@ -131,7 +130,7 @@ const Input = styled(motion.input)`
 `;
 
 const Icon = styled(motion.svg)`
-  z-index: 2;
+  z-index: 1; // To posiiton on top of Input
   width: 20px;
   cursor: pointer;
 `;
