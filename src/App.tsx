@@ -17,12 +17,12 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/movies/:id" element={<Home />} />
+        <Route path="/movies/:section/:id" element={<Home />} />
         <Route path="/tv" element={<Tv />} />
-        <Route path="/tv/:id" element={<Tv />} />
+        <Route path="/tv/:section/:id" element={<Tv />} />
         <Route path="/search" element={<Search />} />
-        <Route path="/search/movies/:id" element={<Search />} />
-        <Route path="/search/tv/:id" element={<Search />} />
+        <Route path="/search/movies/:section/:id" element={<Search />} />
+        <Route path="/search/tv/:section/:id" element={<Search />} />
       </Routes>
     </HashRouter>
   );

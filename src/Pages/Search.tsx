@@ -79,12 +79,14 @@ function Search() {
               title={`영화 검색 결과 (${movieSearchData?.results.length}건)`}
               category="영화"
               keyword={keyword!}
+              section="moviesearch"
             />
             <SearchSlider
               movies={tvSearchData?.results}
               title={`TV 쇼 검색 결과 (${tvSearchData?.results.length}건)`}
               category="TV 쇼"
               keyword={keyword!}
+              section="tvsearch"
             />
           </SliderWrapper>
         </>

@@ -64,9 +64,20 @@ function Tv() {
               movies={airingTodayTvData?.results}
               title="방영 중인 TV Shows"
               category="TV 쇼"
+              section="airingtoday"
             />
-            <Slider movies={popularTvData?.results} title="인기 TV 콘텐츠" category="TV 쇼" />
-            <Slider movies={topRatedTvData?.results} title="최고 평점 TV Shows" category="TV 쇼" />
+            <Slider
+              movies={popularTvData?.results}
+              title="인기 TV 콘텐츠"
+              category="TV 쇼"
+              section="popular"
+            />
+            <Slider
+              movies={topRatedTvData?.results}
+              title="최고 평점 TV Shows"
+              category="TV 쇼"
+              section="toprated"
+            />
           </SliderWrapper>
         </>
       )}

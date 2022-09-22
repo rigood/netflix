@@ -65,13 +65,24 @@ function Home() {
         <>
           <Banner movie={nowPlayingData?.results[6]} category="영화" />
           <SliderWrapper>
-            <Slider movies={nowPlayingData?.results} title="현재 상영 중인 영화" category="영화" />
+            <Slider
+              movies={nowPlayingData?.results}
+              title="현재 상영 중인 영화"
+              category="영화"
+              section="nowplaying"
+            />
             <Slider
               movies={topRatedData?.results}
               title="오늘의 한국 TOP 10 영화"
               category="영화"
+              section="toprated"
             />
-            <Slider movies={upcomingData?.results} title="개봉 예정 영화" category="영화" />
+            <Slider
+              movies={upcomingData?.results}
+              title="개봉 예정 영화"
+              category="영화"
+              section="upcoming"
+            />
           </SliderWrapper>
         </>
       )}

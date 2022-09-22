@@ -184,7 +184,7 @@ const BigMovie = styled(motion.div)`
   bottom: 0;
   left: 0;
   right: 0;
-  margin: 0 auto;
+  margin: auto;
   z-index: 9999; // On top of Overlay
   width: 90%;
   max-width: 900px;
@@ -335,6 +335,7 @@ interface ISliderProps {
   movies?: IMovie[];
   title: string;
   category: string;
+  section: string;
 }
 
 interface IRowVariantsProps {
@@ -354,7 +355,7 @@ const rowVariants = {
   }),
 };
 
-function Slider({ movies, title, category }: ISliderProps) {
+function Slider({ movies, title, category, section }: ISliderProps) {
   // Window-width
   const width = useWindowDimensions();
 
@@ -391,17 +392,19 @@ function Slider({ movies, title, category }: ISliderProps) {
 
   // Modal
   const navigate = useNavigate();
-  const onBoxClicked = (movieId: number) => {
+  const onBoxClicked = (section: string, movieId: number) => {
     if (category === "영화") {
-      navigate(`/movies/${movieId}`);
+      navigate(`/movies/${section}/${movieId}`);
     } else {
-      navigate(`/tv/${movieId}`);
+      navigate(`/tv/${section}/${movieId}`);
     }
   };
   const onOverlayClicked = () => navigate(-1);
   const onCloseBtnClicked = () => navigate(-1);
 
-  const bigMovieMatch = useMatch(category === "영화" ? "/movies/:movieId" : "/tv/:movieId");
+  const bigMovieMatch = useMatch(
+    category === "영화" ? `/movies/${section}/:movieId` : `/tv/${section}/:movieId`
+  );
 
   const clickedMovie =
     bigMovieMatch?.params.movieId &&
@@ -449,12 +452,13 @@ function Slider({ movies, title, category }: ISliderProps) {
               .slice(offset * index, offset * index + offset)
               .map((movie) => (
                 <Box
+                  layoutId={`${String(movie.id)}${section}`}
                   key={movie.id}
                   bg={makeImgPath(movie.backdrop_path, "w500")}
                   variants={boxVariants}
                   whileHover="hover"
                   initial="normal"
-                  onClick={() => onBoxClicked(movie.id)}
+                  onClick={() => onBoxClicked(section, movie.id)}
                 >
                   <BoxInfo variants={infoVariants}>
                     <div className="icons">
@@ -489,7 +493,7 @@ function Slider({ movies, title, category }: ISliderProps) {
         {bigMovieMatch ? (
           <>
             <Overlay onClick={onOverlayClicked} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
-            <BigMovie>
+            <BigMovie layoutId={`${bigMovieMatch.params.movieId}${section}`}>
               {clickedMovie && (
                 <>
                   <BigCover bg={makeImgPath(clickedMovie.backdrop_path, "w500")}>
