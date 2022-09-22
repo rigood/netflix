@@ -412,17 +412,33 @@ function Slider({ movies, title, category, keyword, section }: ISliderProps) {
 
   // Data-fetching for detail movie data in Modal
   const detailId = bigMovieMatch?.params.movieId;
-  const { data: detailMovieData } = useQuery<IGetDetailResult>(["detailMovie", detailId], () =>
-    getDetailMovie(detailId || "")
+  const { data: detailMovieData } = useQuery<IGetDetailResult>(
+    ["detailMovie", detailId],
+    () => getDetailMovie(detailId || ""),
+    {
+      enabled: !!detailId,
+    }
   );
-  const { data: detailTvData } = useQuery<IGetDetailResult>(["detailTv", detailId], () =>
-    getDetailTv(detailId || "")
+  const { data: detailTvData } = useQuery<IGetDetailResult>(
+    ["detailTv", detailId],
+    () => getDetailTv(detailId || ""),
+    {
+      enabled: !!detailId,
+    }
   );
-  const { data: castMovieData } = useQuery<IGetCreditsResult>(["castMovie", detailId], () =>
-    getCreditsMovie(detailId || "")
+  const { data: castMovieData } = useQuery<IGetCreditsResult>(
+    ["castMovie", detailId],
+    () => getCreditsMovie(detailId || ""),
+    {
+      enabled: !!detailId,
+    }
   );
-  const { data: castTvData } = useQuery<IGetCreditsResult>(["castTv", detailId], () =>
-    getCreditsTv(detailId || "")
+  const { data: castTvData } = useQuery<IGetCreditsResult>(
+    ["castTv", detailId],
+    () => getCreditsTv(detailId || ""),
+    {
+      enabled: !!detailId,
+    }
   );
 
   return (
