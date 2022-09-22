@@ -17,7 +17,6 @@ import { useState } from "react";
 
 /* Components Styling */
 const Nav = styled(motion.nav)`
-  z-index: 9;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -116,6 +115,7 @@ const Search = styled.form`
 const Input = styled(motion.input)`
   position: absolute; // Fix posiiton for Expanding Motion
   right: 60px; // Nav's padding-right
+  z-index: -1; // Magnifying Icon should be on top of Input
   padding: 5px;
   padding-left: 40px; // space for Maginifying glass-Icon
   border: 1px solid ${(porps) => porps.theme.white.darker};
@@ -130,7 +130,6 @@ const Input = styled(motion.input)`
 `;
 
 const Icon = styled(motion.svg)`
-  z-index: 1; // To posiiton on top of Input
   width: 20px;
   cursor: pointer;
 `;
