@@ -17,9 +17,9 @@ import {
 import { makeImgPath } from "../utils";
 
 /* Motion */
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll } from "framer-motion";
 import useWindowDimensions from "../useWindowDimensions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 /* Icons */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -177,13 +177,12 @@ const Overlay = styled(motion.div)`
   opacity: 0; // for animation 0->1->0
 `;
 
-const BigMovie = styled(motion.div)`
-  position: fixed;
-  top: 0;
-  bottom: 0;
+const BigMovie = styled(motion.div)<{ scrolly: number }>`
+  position: absolute;
+  top: ${(props) => props.scrolly + 50}px;
   left: 0;
   right: 0;
-  margin: auto;
+  margin: 0 auto;
   z-index: 9999; // On top of Overlay
   width: 90%;
   max-width: 900px;
@@ -354,6 +353,8 @@ const rowVariants = {
   }),
 };
 
+// console.log(scrollY);
+
 function Slider({ movies, title, category, section }: ISliderProps) {
   // Window-width
   const width = useWindowDimensions();
@@ -440,6 +441,13 @@ function Slider({ movies, title, category, section }: ISliderProps) {
     }
   );
 
+  // Positioning BigMovie Modal
+  const { scrollY } = useScroll();
+
+  useEffect(() => {
+    scrollY.onChange(() => console.log(scrollY.get()));
+  }, [scrollY]);
+
   return (
     <>
       <Title>{title}</Title>
@@ -508,7 +516,10 @@ function Slider({ movies, title, category, section }: ISliderProps) {
         {bigMovieMatch ? (
           <>
             <Overlay onClick={onOverlayClicked} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
-            <BigMovie layoutId={`${bigMovieMatch.params.movieId}${section}`}>
+            <BigMovie
+              layoutId={`${bigMovieMatch.params.movieId}${section}`}
+              scrolly={scrollY.get()}
+            >
               {clickedMovie && (
                 <>
                   <BigCover bg={makeImgPath(clickedMovie.backdrop_path, "w500")}>
