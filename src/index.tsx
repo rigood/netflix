@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 
 /* Data fetching */
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 /* Theme-color */
 import { ThemeProvider } from "styled-components";
@@ -44,6 +45,7 @@ root.render(
         <GlobalStyle />
         <App />
       </ThemeProvider>
+      <ReactQueryDevtools />
     </QueryClientProvider>
   </React.StrictMode>
 );
