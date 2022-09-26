@@ -5,15 +5,7 @@ import { useMatch, useNavigate } from "react-router-dom";
 
 /* Data fetching */
 import { useQuery } from "@tanstack/react-query";
-import {
-  getCreditsMovie,
-  getCreditsTv,
-  getDetailMovie,
-  getDetailTv,
-  IGetCreditsResult,
-  IGetDetailResult,
-  IMovie,
-} from "../api";
+import { getCreditsMovie, getCreditsTv, getDetailMovie, getDetailTv, IGetCreditsResult, IGetDetailResult, IMovie } from "../api";
 import { makeImgPath } from "../utils";
 
 /* Motion */
@@ -23,14 +15,7 @@ import { useEffect, useState } from "react";
 
 /* Icons */
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faAngleLeft,
-  faAngleRight,
-  faCirclePlay,
-  faCirclePlus,
-  faHeart,
-  faClose,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft, faAngleRight, faCirclePlay, faCirclePlus, faHeart, faClose } from "@fortawesome/free-solid-svg-icons";
 
 /* Components Styling */
 
@@ -399,47 +384,39 @@ function Slider({ movies, title, category, section }: ISliderProps) {
       navigate(`/tv/${section}/${movieId}`);
     }
   };
-  const onOverlayClicked = () => navigate(-1);
-  const onCloseBtnClicked = () => navigate(-1);
+  const onOverlayClicked = () => {
+    if (category === "영화") {
+      navigate("/");
+    } else {
+      navigate("/tv");
+    }
+  };
+  const onCloseBtnClicked = () => {
+    if (category === "영화") {
+      navigate("/");
+    } else {
+      navigate("/tv");
+    }
+  };
 
-  const bigMovieMatch = useMatch(
-    category === "영화" ? `/movies/${section}/:movieId` : `/tv/${section}/:movieId`
-  );
+  const bigMovieMatch = useMatch(category === "영화" ? `/movies/${section}/:movieId` : `/tv/${section}/:movieId`);
 
-  const clickedMovie =
-    bigMovieMatch?.params.movieId &&
-    movies?.find((movie) => String(movie.id) === bigMovieMatch.params.movieId);
+  const clickedMovie = bigMovieMatch?.params.movieId && movies?.find((movie) => String(movie.id) === bigMovieMatch.params.movieId);
 
   // Data-fetching for detail movie data in Modal
   const detailId = bigMovieMatch?.params.movieId;
-  const { data: detailMovieData } = useQuery<IGetDetailResult>(
-    ["detailMovie", detailId],
-    () => getDetailMovie(detailId || ""),
-    {
-      enabled: !!detailId,
-    }
-  );
-  const { data: detailTvData } = useQuery<IGetDetailResult>(
-    ["detailTv", detailId],
-    () => getDetailTv(detailId || ""),
-    {
-      enabled: !!detailId,
-    }
-  );
-  const { data: castMovieData } = useQuery<IGetCreditsResult>(
-    ["castMovie", detailId],
-    () => getCreditsMovie(detailId || ""),
-    {
-      enabled: !!detailId,
-    }
-  );
-  const { data: castTvData } = useQuery<IGetCreditsResult>(
-    ["castTv", detailId],
-    () => getCreditsTv(detailId || ""),
-    {
-      enabled: !!detailId,
-    }
-  );
+  const { data: detailMovieData } = useQuery<IGetDetailResult>(["detailMovie", detailId], () => getDetailMovie(detailId || ""), {
+    enabled: !!detailId,
+  });
+  const { data: detailTvData } = useQuery<IGetDetailResult>(["detailTv", detailId], () => getDetailTv(detailId || ""), {
+    enabled: !!detailId,
+  });
+  const { data: castMovieData } = useQuery<IGetCreditsResult>(["castMovie", detailId], () => getCreditsMovie(detailId || ""), {
+    enabled: !!detailId,
+  });
+  const { data: castTvData } = useQuery<IGetCreditsResult>(["castTv", detailId], () => getCreditsTv(detailId || ""), {
+    enabled: !!detailId,
+  });
 
   // Positioning BigMovie Modal
   const { scrollY } = useScroll();
@@ -456,20 +433,8 @@ function Slider({ movies, title, category, section }: ISliderProps) {
         <LeftHandle onClick={decreaseIndex}>
           <FontAwesomeIcon icon={faAngleLeft} />
         </LeftHandle>
-        <AnimatePresence
-          initial={false}
-          onExitComplete={onExitToggleMoving}
-          custom={{ movingBack, width }}
-        >
-          <Row
-            key={index}
-            variants={rowVariants}
-            initial="enter"
-            animate="visible"
-            exit="exit"
-            custom={{ movingBack, width }}
-            transition={{ type: "tween", duration: 0.5 }}
-          >
+        <AnimatePresence initial={false} onExitComplete={onExitToggleMoving} custom={{ movingBack, width }}>
+          <Row key={index} variants={rowVariants} initial="enter" animate="visible" exit="exit" custom={{ movingBack, width }} transition={{ type: "tween", duration: 0.5 }}>
             {movies
               ?.slice(1)
               .slice(offset * index, offset * index + offset)
@@ -495,11 +460,7 @@ function Slider({ movies, title, category, section }: ISliderProps) {
                     </div>
                     <h4>{category === "영화" ? movie.title : movie.name}</h4>
                     <div className="subInfo">
-                      <span>
-                        {category === "영화"
-                          ? `개봉일 : ${movie.release_date}`
-                          : `첫방영 : ${movie.first_air_date}`}
-                      </span>
+                      <span>{category === "영화" ? `개봉일 : ${movie.release_date}` : `첫방영 : ${movie.first_air_date}`}</span>
                       <span>평점 : ⭐{movie.vote_average} 점</span>
                     </div>
                   </BoxInfo>
@@ -516,10 +477,7 @@ function Slider({ movies, title, category, section }: ISliderProps) {
         {bigMovieMatch ? (
           <>
             <Overlay onClick={onOverlayClicked} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
-            <BigMovie
-              layoutId={`${bigMovieMatch.params.movieId}${section}`}
-              scrolly={scrollY.get()}
-            >
+            <BigMovie layoutId={`${bigMovieMatch.params.movieId}${section}`} scrolly={scrollY.get()}>
               {clickedMovie && (
                 <>
                   <BigCover bg={makeImgPath(clickedMovie.backdrop_path, "w500")}>
@@ -535,35 +493,19 @@ function Slider({ movies, title, category, section }: ISliderProps) {
                             })}
                       </BigCoverGenres>
                       <BigCoverNumber>
-                        <span>
-                          {category === "영화"
-                            ? `상영시간 : ${detailMovieData?.runtime}분`
-                            : `시즌 ${detailTvData?.number_of_seasons}개 에피소드 ${detailTvData?.number_of_episodes}개`}
-                        </span>
+                        <span>{category === "영화" ? `상영시간 : ${detailMovieData?.runtime}분` : `시즌 ${detailTvData?.number_of_seasons}개 에피소드 ${detailTvData?.number_of_episodes}개`}</span>
                       </BigCoverNumber>
-                      <BigTitle>
-                        {category === "영화" ? clickedMovie.title : clickedMovie.name}
-                      </BigTitle>
+                      <BigTitle>{category === "영화" ? clickedMovie.title : clickedMovie.name}</BigTitle>
                       <BigCoverSubInfo>
-                        <span>
-                          {category === "영화"
-                            ? `개봉일 : ${clickedMovie.release_date}`
-                            : `첫방영 : ${clickedMovie.first_air_date}`}
-                        </span>
+                        <span>{category === "영화" ? `개봉일 : ${clickedMovie.release_date}` : `첫방영 : ${clickedMovie.first_air_date}`}</span>
                         <span>평점 : ⭐{clickedMovie.vote_average} 점</span>
                       </BigCoverSubInfo>
                     </BigCoverInfo>
-                    <FontAwesomeIcon
-                      className="closeBtn"
-                      icon={faClose}
-                      onClick={onCloseBtnClicked}
-                    />
+                    <FontAwesomeIcon className="closeBtn" icon={faClose} onClick={onCloseBtnClicked} />
                   </BigCover>
 
                   <BigContent>
-                    <BigOverview>
-                      {clickedMovie.overview ? clickedMovie.overview : "준비중입니다."}
-                    </BigOverview>
+                    <BigOverview>{clickedMovie.overview ? clickedMovie.overview : "준비중입니다."}</BigOverview>
                     <BigIcons>
                       <FontAwesomeIcon icon={faCirclePlay} className="play" bounce />
                       <FontAwesomeIcon icon={faCirclePlus} className="plus" />
