@@ -163,11 +163,11 @@ const Overlay = styled(motion.div)`
 `;
 
 const BigMovie = styled(motion.div)<{ scrolly: number }>`
-  position: absolute;
-  top: ${(props) => props.scrolly + 50}px;
+  position: fixed;
+  top: 0;
   left: 0;
   right: 0;
-  margin: 0 auto;
+  margin: auto;
   z-index: 9999; // On top of Overlay
   width: 90%;
   max-width: 900px;
